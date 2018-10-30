@@ -17,9 +17,13 @@ import retrofit2.Response;
  */
 public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, RedditPost> {
 
+    private final int MAX = 50;
+
     private RedditApi api;
 
     private MutableLiveData<Boolean> loadingState;
+
+    private int fetchedItemsCount = 0;  // Tracking for the successfully fetched items
 
     public PageKeyedPostsRemoteDataSource(RedditApi api) {
         this.api = api;
@@ -42,6 +46,7 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
 
                         if (response.isSuccessful()) {
                             RedditListingResponse.ResponseData responseData = response.body().getData();
+                            fetchedItemsCount = responseData.getContent().size();
                             callback.onResult(responseData.getContent(), responseData.getBeforeKey(), responseData.getAfterKey());
                         } else {
                             onFailure(call, new Exception("Error code: " + response.code()));
@@ -94,8 +99,8 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
 
                         if (response.isSuccessful()) {
                             RedditListingResponse.ResponseData responseData = response.body().getData();
-                            // TODO: Limit to 50
-                            callback.onResult(responseData.getContent(), responseData.getAfterKey());
+                            fetchedItemsCount += responseData.getContent().size();
+                            callback.onResult(responseData.getContent(), fetchedItemsCount >= MAX ? null : responseData.getAfterKey());
                         } else {
                             onFailure(call, new Exception("Error code: " + response.code()));
                         }

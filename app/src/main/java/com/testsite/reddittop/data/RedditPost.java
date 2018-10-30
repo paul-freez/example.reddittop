@@ -3,8 +3,8 @@ package com.testsite.reddittop.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.testsite.reddittop.data.source.api.RedditApi;
+import com.testsite.reddittop.utils.StringUtils;
 
-import java.text.DecimalFormat;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -36,14 +36,12 @@ public class RedditPost {
 
     @SerializedName("thumbnail")
     @Expose
-    private @Nullable
+    private @NonNull
     String thumbnail;
 
     @SerializedName("score")
     @Expose
     private int scoreCount;
-
-    private String score;
 
     @SerializedName("num_comments")
     @Expose
@@ -87,22 +85,15 @@ public class RedditPost {
 
     @Nullable
     public String getThumbnail() {
-        return thumbnail;
+        return thumbnail.startsWith("http") ? thumbnail : null;
     }
 
     public String getScore() {
-        if (score == null) {
-            if (scoreCount > 1000) {
-                score = new DecimalFormat("#.#").format(scoreCount / 1000f) + "k";
-            } else {
-                score = String.valueOf(scoreCount);
-            }
-        }
-        return score;
+        return StringUtils.roundToK(scoreCount);
     }
 
-    public int getCommentsCount() {
-        return commentsCount;
+    public String getCommentsCount() {
+        return StringUtils.roundToK(commentsCount);
     }
 
     public String getLink() {
@@ -112,7 +103,7 @@ public class RedditPost {
     @NonNull
     @Override
     public String toString() {
-        return String.format(Locale.US, "%s\n%s created by %s %s\n%s with %d comments",
+        return String.format(Locale.US, "%s\n%s created by %s %s\n%s with %s comments",
                 getTitle(), getSubreddit(), getAuthor(), getCreationTime(), getScore(), getCommentsCount());
     }
 }

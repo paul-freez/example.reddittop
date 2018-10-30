@@ -45,6 +45,7 @@ public class RedditPostsRepository implements PostsRepository {
         PagedList.Config pagedListConfig =
                 new PagedList.Config.Builder()
 //                        .setEnablePlaceholders(true)
+                        .setInitialLoadSizeHint(size + 1)
                         .setPageSize(size).build();
         LiveData<PagedList<RedditPost>> pagedListLiveData = new LivePagedListBuilder<>(sourceFactory, pagedListConfig)
                 .setFetchExecutor(networkExecutor)

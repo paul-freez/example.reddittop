@@ -25,7 +25,7 @@ public interface RedditApi {
 
     String TOKEN = "/api/v1/access_token";
 
-    String POSTS_TOP = "/top";
+    String POSTS_TOP = "/top.json";
 
     @FormUrlEncoded
     @POST(TOKEN)
