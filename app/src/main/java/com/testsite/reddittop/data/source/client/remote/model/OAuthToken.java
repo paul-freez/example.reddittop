@@ -1,7 +1,10 @@
-package com.testsite.reddittop.data.source.remote.api.model;
+package com.testsite.reddittop.data.source.client.remote.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 
@@ -37,6 +40,6 @@ public class OAuthToken {
     @NonNull
     @Override
     public String toString() {
-        return type + " " + token;
+        return String.format(Locale.US, "%s %s expires in %d minutes", type, token, TimeUnit.SECONDS.toMinutes(expiresIn));
     }
 }

@@ -1,8 +1,8 @@
-package com.testsite.reddittop.data.source.remote.api;
+package com.testsite.reddittop.data.source.api;
 
 import com.google.gson.annotations.SerializedName;
-import com.testsite.reddittop.data.source.remote.api.model.OAuthToken;
-import com.testsite.reddittop.data.source.remote.api.model.RedditTopPostsResponse;
+import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
+import com.testsite.reddittop.data.source.post.remote.model.RedditListingResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -23,23 +23,23 @@ public interface RedditApi {
     String BASE_URL = "https://www.reddit.com";
     String OAUTH_URL = "https://oauth.reddit.com";
 
-    String AUTH_URL = "/api/v1/access_token";
+    String TOKEN = "/api/v1/access_token";
 
     String POSTS_TOP = "/top";
 
     @FormUrlEncoded
-    @POST(AUTH_URL)
+    @POST(TOKEN)
     Call<OAuthToken> getTokenCredentials(@Field(value = "grant_type", encoded = true) String type, @Field("device_id") String deviceId);
 
     @GET(POSTS_TOP)
-    Call<RedditTopPostsResponse> getNextTopPosts(@Query("t")TimeFilter time,
-                                                 @Query("after") String lastElement, @Query("count") int alreadyFetchedItems,
-                                                 @Query("include_categories") boolean inclCategories, @Query("limit") int size);
+    Call<RedditListingResponse> getNextTopPosts(@Query("t")TimeFilter time,
+                                                @Query("after") String lastElement,
+                                                @Query("limit") int size);
 
     @GET(POSTS_TOP)
-    Call<RedditTopPostsResponse> getPreviousTopPosts(@Query("t")TimeFilter time,
-                                                     @Query("before") String lastElement, @Query("count") int alreadyFetchedItems,
-                                                     @Query("include_categories") boolean inclCategories, @Query("limit") int size);
+    Call<RedditListingResponse> getPreviousTopPosts(@Query("t")TimeFilter time,
+                                                    @Query("before") String lastElement,
+                                                    @Query("limit") int size);
 
     enum TimeFilter {
         @SerializedName("all")

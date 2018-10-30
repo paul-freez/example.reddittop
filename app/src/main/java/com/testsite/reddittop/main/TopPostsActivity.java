@@ -3,18 +3,17 @@ package com.testsite.reddittop.main;
 import android.os.Bundle;
 
 import com.testsite.reddittop.R;
-import com.testsite.reddittop.data.Post;
-
-import java.util.List;
+import com.testsite.reddittop.data.RedditPost;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
 
 public class TopPostsActivity extends AppCompatActivity {
 
-    private TopPostsViewModel postsViewModel;
+    private RedditViewModel postsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +22,16 @@ public class TopPostsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        postsViewModel = ViewModelProviders.of(this).get(TopPostsViewModel.class);
-        postsViewModel.getPostList().observe(this, new Observer<List<Post>>() {
+        postsViewModel = ViewModelProviders.of(this).get(RedditViewModel.class);
+        postsViewModel.getLoadingState().observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(List<Post> posts) {
+            public void onChanged(Boolean aBoolean) {
+                // TODO:
+            }
+        });
+        postsViewModel.getPosts().observe(this, new Observer<PagedList<RedditPost>>() {
+            @Override
+            public void onChanged(PagedList<RedditPost> redditPosts) {
                 // TODO:
             }
         });

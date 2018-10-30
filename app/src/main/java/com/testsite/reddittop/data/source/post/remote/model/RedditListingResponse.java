@@ -1,4 +1,4 @@
-package com.testsite.reddittop.data.source.remote.api.model;
+package com.testsite.reddittop.data.source.post.remote.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by paulf
  */
-public class RedditTopPostsResponse {
+public class RedditListingResponse {
 
     @SerializedName("data")
     @Expose

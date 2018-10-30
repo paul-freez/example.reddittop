@@ -2,7 +2,7 @@ package com.testsite.reddittop.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.testsite.reddittop.data.source.remote.api.RedditApi;
+import com.testsite.reddittop.data.source.api.RedditApi;
 
 import java.text.DecimalFormat;
 import java.util.Locale;
@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 /**
  * Created by paulf
  */
-public class Post {
+public class RedditPost {
 
     @SerializedName("title")
     @Expose
@@ -23,6 +23,10 @@ public class Post {
     @SerializedName("author")
     @Expose
     private String authorName;
+
+    @SerializedName("subreddit")
+    @Expose
+    private String subredditName;
 
     @SerializedName("created_utc")
     @Expose
@@ -53,8 +57,12 @@ public class Post {
         return title;
     }
 
-    public String getAuthorName() {
+    public String getAuthor() {
         return "u/" + authorName;
+    }
+
+    public String getSubreddit() {
+        return "r/" + subredditName;
     }
 
     public String getCreationTime() {
@@ -104,7 +112,7 @@ public class Post {
     @NonNull
     @Override
     public String toString() {
-        return String.format(Locale.US, "%s\ncreated by %s %s\n%s with %d comments",
-                getTitle(), getAuthorName(), getCreationTime(), getScore(), getCommentsCount());
+        return String.format(Locale.US, "%s\n%s created by %s %s\n%s with %d comments",
+                getTitle(), getSubreddit(), getAuthor(), getCreationTime(), getScore(), getCommentsCount());
     }
 }
