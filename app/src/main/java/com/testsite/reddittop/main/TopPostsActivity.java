@@ -1,21 +1,28 @@
 package com.testsite.reddittop.main;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.testsite.reddittop.R;
 import com.testsite.reddittop.data.RedditPost;
 import com.testsite.reddittop.databinding.ActivityTopListBinding;
+import com.testsite.reddittop.utils.CustomTabsInstance;
 import com.testsite.reddittop.utils.OnPostClickListener;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.GenericLifecycleObserver;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import timber.log.Timber;
+import saschpe.android.customtabs.CustomTabsHelper;
 
 public class TopPostsActivity extends AppCompatActivity {
 
@@ -36,6 +43,21 @@ public class TopPostsActivity extends AppCompatActivity {
         binding.setViewmodel(postsViewModel);
 
         setupList();
+
+        // Register for Chrome Tabs warmup
+        getLifecycle().addObserver(new GenericLifecycleObserver() {
+            @Override
+            public void onStateChanged(LifecycleOwner source, Lifecycle.Event event) {
+                switch (event) {
+                    case ON_RESUME:
+                        CustomTabsInstance.getInstance().bindCustomTabsService(TopPostsActivity.this);
+                        break;
+                    case ON_PAUSE:
+                        CustomTabsInstance.getInstance().unbindCustomTabsService(TopPostsActivity.this);
+                        break;
+                }
+            }
+        });
     }
 
     private void setupList() {
@@ -43,7 +65,7 @@ public class TopPostsActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new OnPostClickListener() {
             @Override
             public void onPostClicked(RedditPost post) {
-                Timber.d(post.toString());
+                postsViewModel.openPost(post);
             }
         });
         binding.rvTop.setAdapter(adapter);
@@ -54,6 +76,29 @@ public class TopPostsActivity extends AppCompatActivity {
             @Override
             public void onChanged(PagedList<RedditPost> redditPosts) {
                 adapter.submitList(redditPosts);
+            }
+        });
+        postsViewModel.getCalloutIntent().observe(this, new Observer<CustomTabsInstance.ChromTabsIntent<RedditPost>>() {
+            @Override
+            public void onChanged(CustomTabsInstance.ChromTabsIntent<RedditPost> redditPostChromTabsIntent) {
+                CustomTabsHelper.openCustomTab(TopPostsActivity.this, redditPostChromTabsIntent.getIntent(),
+                        Uri.parse(redditPostChromTabsIntent.getContent().getLink()),
+                        new CustomTabsHelper.CustomTabFallback() {
+                            @Override
+                            public void openUri(Context context, Uri uri) {
+                                Intent viewIntent = new Intent(Intent.ACTION_VIEW, uri);
+                                String title = getResources().getString(R.string.chooser_title);
+                                // Create intent to show chooser
+                                Intent chooser = Intent.createChooser(viewIntent, title);
+
+                                // Verify the intent will resolve to at least one activity
+                                if (viewIntent.resolveActivity(getPackageManager()) != null) {
+                                    startActivity(chooser);
+                                }
+                                // TODO: Make sure this will work when Chrome is not installed, but Reddit app IS ->
+                                // TODO: open in Reddit
+                            }
+                        });
             }
         });
     }
