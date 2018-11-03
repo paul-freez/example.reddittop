@@ -1,4 +1,4 @@
-package com.testsite.reddittop.utils;
+package com.testsite.reddittop.utils.connectivity;
 
 import com.google.gson.annotations.SerializedName;
 

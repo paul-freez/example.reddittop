@@ -1,6 +1,7 @@
 package com.testsite.reddittop.data.source.client;
 
 import com.testsite.reddittop.UIListing;
+import com.testsite.reddittop.data.source.BaseRepository;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.client.remote.ClientRemoteDataSource;
 import com.testsite.reddittop.data.source.client.remote.ClientRemoteDataSourceFactory;
@@ -13,14 +14,17 @@ import androidx.lifecycle.Transformations;
 /**
  * Created by paulf
  */
-public class RedditClientRepository implements ClientRepository {
+public class RedditClientRepository extends BaseRepository<ClientRemoteDataSource, ClientRemoteDataSourceFactory> implements ClientRepository {
 
     private static RedditClientRepository INSTANCE;
 
-    private RedditApi api;
-
     private RedditClientRepository(RedditApi api) {
-        this.api = api;
+        super(api);
+    }
+
+    @Override
+    protected ClientRemoteDataSourceFactory createSourceFactory() {
+        return  new ClientRemoteDataSourceFactory(getApi());
     }
 
     public static RedditClientRepository getInstance(RedditApi api) {
@@ -33,23 +37,15 @@ public class RedditClientRepository implements ClientRepository {
 
     @Override
     public UIListing<OAuthToken> authenticate() {
-        ClientRemoteDataSourceFactory sourceFactory = new ClientRemoteDataSourceFactory(api);
-        sourceFactory.create().authenticate();
+        getSourceFactory().create().authenticate();
 
-        LiveData<OAuthToken> tokenLiveData = Transformations.switchMap(sourceFactory.getSourceLiveData(), new Function<ClientRemoteDataSource, LiveData<OAuthToken>>() {
+        LiveData<OAuthToken> tokenLiveData = Transformations.switchMap(getSourceFactory().getSourceLiveData(), new Function<ClientRemoteDataSource, LiveData<OAuthToken>>() {
             @Override
             public LiveData<OAuthToken> apply(ClientRemoteDataSource input) {
                 return input.getToken();
             }
         });
 
-        LiveData<Boolean> loadingStateLiveData = Transformations.switchMap(sourceFactory.getSourceLiveData(), new Function<ClientRemoteDataSource, LiveData<Boolean>>() {
-            @Override
-            public LiveData<Boolean> apply(ClientRemoteDataSource input) {
-                return input.getLoadingState();
-            }
-        });
-
-        return new UIListing<>(tokenLiveData, loadingStateLiveData);
+        return new UIListing<>(tokenLiveData, getLoaderHandler(), getMessengerHandler());
     }
 }

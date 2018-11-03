@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.testsite.reddittop.R;
 import com.testsite.reddittop.data.RedditPost;
 import com.testsite.reddittop.databinding.ActivityTopListBinding;
@@ -58,6 +59,13 @@ public class TopPostsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        postsViewModel.getErrorMessenger().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String message) {
+                Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void setupList() {
@@ -78,7 +86,7 @@ public class TopPostsActivity extends AppCompatActivity {
                 adapter.submitList(redditPosts);
             }
         });
-        postsViewModel.getCalloutIntent().observe(this, new Observer<CustomTabsInstance.ChromTabsIntent<RedditPost>>() {
+        postsViewModel.getExternalIntent().observe(this, new Observer<CustomTabsInstance.ChromTabsIntent<RedditPost>>() {
             @Override
             public void onChanged(CustomTabsInstance.ChromTabsIntent<RedditPost> redditPostChromTabsIntent) {
                 CustomTabsHelper.openCustomTab(TopPostsActivity.this, redditPostChromTabsIntent.getIntent(),

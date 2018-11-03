@@ -25,16 +25,16 @@ public class OAuthToken {
     @Expose
     private String type;
 
+    /**
+     * Returns token representation.
+     * <p/><i>You can also use {@link #toString()} instead</i>
+     */
     public String getToken() {
-        return token;
+        return type + " " + token;
     }
 
     public long getExpiresIn() {
         return expiresIn;
-    }
-
-    public String getType() {
-        return type;
     }
 
     @NonNull

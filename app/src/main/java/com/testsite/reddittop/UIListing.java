@@ -13,9 +13,12 @@ public class UIListing<T> extends LiveData<T> {
 
     private LiveData<Boolean> loadState;
 
-    public UIListing(LiveData<T> pagedList, LiveData<Boolean> loadState) {
+    private LiveData<String> errorMessage;
+
+    public UIListing(LiveData<T> pagedList, LiveData<Boolean> loadState, LiveData<String> errorMessage) {
         this.pagedList = pagedList;
         this.loadState = loadState;
+        this.errorMessage = errorMessage;
     }
 
     public LiveData<T> getContent() {
@@ -24,5 +27,9 @@ public class UIListing<T> extends LiveData<T> {
 
     public LiveData<Boolean> getLoadState() {
         return loadState;
+    }
+
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
     }
 }

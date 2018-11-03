@@ -19,7 +19,9 @@ public class ClientRemoteDataSource implements ClientDataSource {
     private RedditApi api;
 
     private MutableLiveData<OAuthToken> token = new MutableLiveData<>();
+
     private MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
+    private MutableLiveData<String> errorMessenger = new MutableLiveData<>();
 
     public ClientRemoteDataSource(RedditApi api) {
         this.api = api;
@@ -27,10 +29,6 @@ public class ClientRemoteDataSource implements ClientDataSource {
 
     public LiveData<OAuthToken> getToken() {
         return token;
-    }
-
-    public LiveData<Boolean> getLoadingState() {
-        return loadingState;
     }
 
     @Override
@@ -55,8 +53,18 @@ public class ClientRemoteDataSource implements ClientDataSource {
             @Override
             public void onFailure(Call<OAuthToken> call, Throwable t) {
                 loadingState.setValue(false);
-                // TODO: Handle failure
+                errorMessenger.setValue(t.getMessage());
             }
         });
+    }
+
+    @Override
+    public LiveData<String> getErrorMessenger() {
+        return errorMessenger;
+    }
+
+    @Override
+    public LiveData<Boolean> getLoaderHandler() {
+        return loadingState;
     }
 }

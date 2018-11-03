@@ -58,24 +58,34 @@ public class RedditViewModel extends ViewModel {
     });
 
     private RedditClientRepository clientRepository;
-
     private RedditPostsRepository postsRepository;
 
-    private MutableLiveData<CustomTabsInstance.ChromTabsIntent<RedditPost>> calloutIntent = new MutableLiveData<>();
+    private MutableLiveData<CustomTabsInstance.ChromTabsIntent<RedditPost>> externalIntent = new MutableLiveData<>();
+
+    private MediatorLiveData<String> errorMessenger = new MediatorLiveData<>();
 
     public RedditViewModel() {
-        // Setting up loaders
-        // Loader for authorization
+        setupLoaders();
+        setupRepoCalls();
+        setupErrorMassaging();
+
+        this.clientRepository = RedditClientRepository.getInstance(
+                RedditApiFactory.create(RedditApi.BASE_URL, null));
+    }
+
+    private void setupLoaders() {
+        Observer<Boolean> simpleLoaderObserver = new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean value) {
+                loadingState.setValue(value);
+            }
+        };
+
+        //Loader for auth
         LiveData<Boolean> loadingStateAuth = Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<Boolean>>() {
             @Override
             public LiveData<Boolean> apply(UIListing<OAuthToken> input) {
                 return input.getLoadState();
-            }
-        });
-        loadingState.addSource(loadingStateAuth, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean value) {
-                loadingState.setValue(value);
             }
         });
         // Loader for posts
@@ -85,15 +95,20 @@ public class RedditViewModel extends ViewModel {
                 return input.getLoadState();
             }
         });
-        loadingState.addSource(loadingStatePosts, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean value) {
-                loadingState.setValue(value);
-            }
-        });
 
-        // Setting up repo calls
-        // Result for the 1st init
+        loadingState.addSource(loadingStateAuth, simpleLoaderObserver);
+        loadingState.addSource(loadingStatePosts, simpleLoaderObserver);
+    }
+
+    private void setupRepoCalls() {
+        Observer<UIListing<PagedList<RedditPost>>> simpleRepoObserver = new Observer<UIListing<PagedList<RedditPost>>>() {
+            @Override
+            public void onChanged(UIListing<PagedList<RedditPost>> pagedListUIListing) {
+                repoResult.setValue(pagedListUIListing);
+            }
+        };
+
+        // Result from auth
         LiveData<UIListing<PagedList<RedditPost>>> repoResultInit = Transformations.switchMap(token, new Function<OAuthToken, LiveData<UIListing<PagedList<RedditPost>>>>() {
             @Override
             public LiveData<UIListing<PagedList<RedditPost>>> apply(OAuthToken token) {
@@ -104,12 +119,6 @@ public class RedditViewModel extends ViewModel {
                 return res;
             }
         });
-        repoResult.addSource(repoResultInit, new Observer<UIListing<PagedList<RedditPost>>>() {
-            @Override
-            public void onChanged(UIListing<PagedList<RedditPost>> pagedListUIListing) {
-                repoResult.setValue(pagedListUIListing);
-            }
-        });
         // Result from manual fetching
         LiveData<UIListing<PagedList<RedditPost>>> repoResultFetch = Transformations.map(fetch, new Function<Long, UIListing<PagedList<RedditPost>>>() {
             @Override
@@ -117,15 +126,36 @@ public class RedditViewModel extends ViewModel {
                 return postsRepository.getTopPosts(5);
             }
         });
-        repoResult.addSource(repoResultFetch, new Observer<UIListing<PagedList<RedditPost>>>() {
+
+        repoResult.addSource(repoResultInit, simpleRepoObserver);
+        repoResult.addSource(repoResultFetch, simpleRepoObserver);
+    }
+
+    private void setupErrorMassaging() {
+        Observer<String> simpleMessagingObserver = new Observer<String>() {
             @Override
-            public void onChanged(UIListing<PagedList<RedditPost>> pagedListUIListing) {
-                repoResult.setValue(pagedListUIListing);
+            public void onChanged(String value) {
+                errorMessenger.setValue(value);
+            }
+        };
+
+        //Loader for auth
+        LiveData<String> errorMessAuth = Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<String>>() {
+            @Override
+            public LiveData<String> apply(UIListing<OAuthToken> input) {
+                return input.getErrorMessage();
+            }
+        });
+        // Loader for posts
+        LiveData<String> errorMessPosts = Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<String>>() {
+            @Override
+            public LiveData<String> apply(UIListing<PagedList<RedditPost>> input) {
+                return input.getErrorMessage();
             }
         });
 
-        this.clientRepository = RedditClientRepository.getInstance(
-                RedditApiFactory.create(RedditApi.BASE_URL, null));
+        errorMessenger.addSource(errorMessAuth, simpleMessagingObserver);
+        errorMessenger.addSource(errorMessPosts, simpleMessagingObserver);
     }
 
     public void start() {
@@ -144,16 +174,20 @@ public class RedditViewModel extends ViewModel {
         return loadingState;
     }
 
+    public MediatorLiveData<String> getErrorMessenger() {
+        return errorMessenger;
+    }
+
     public void openPost(RedditPost post) {
         CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
                 .setToolbarColor(App.getContext().getResources().getColor(R.color.colorPrimary))
                 .setShowTitle(true)
                 .build();
 
-        calloutIntent.setValue(new CustomTabsInstance.ChromTabsIntent<>(customTabsIntent, post));
+        externalIntent.setValue(new CustomTabsInstance.ChromTabsIntent<>(customTabsIntent, post));
     }
 
-    public LiveData<CustomTabsInstance.ChromTabsIntent<RedditPost>> getCalloutIntent() {
-        return calloutIntent;
+    public LiveData<CustomTabsInstance.ChromTabsIntent<RedditPost>> getExternalIntent() {
+        return externalIntent;
     }
 }

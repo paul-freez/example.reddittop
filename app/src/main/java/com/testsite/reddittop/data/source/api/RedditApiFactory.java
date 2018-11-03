@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.testsite.reddittop.BuildConfig;
 import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
-import com.testsite.reddittop.utils.EnumRetrofitConverterFactory;
+import com.testsite.reddittop.utils.connectivity.ConnectivityInterceptor;
+import com.testsite.reddittop.utils.connectivity.EnumRetrofitConverterFactory;
+import com.testsite.reddittop.utils.connectivity.ErrorHandlingAdapter;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -28,6 +30,7 @@ public class RedditApiFactory {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(new ConnectivityInterceptor())
                 .addInterceptor(loggingInterceptor)
                 .addInterceptor(new Interceptor() {
                     @Override
@@ -40,7 +43,7 @@ public class RedditApiFactory {
                                 // Authorization
                                 .header("Authorization", (token == null ?
                                         Credentials.basic(RedditApi.CLIENT_ID, "")
-                                        : token.toString()))
+                                        : token.getToken()))
                                 .build();
                         return chain.proceed(requestWithUserAgent);
                     }
@@ -51,6 +54,7 @@ public class RedditApiFactory {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .client(client)
+                .addCallAdapterFactory(new ErrorHandlingAdapter.ErrorHandlingCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addConverterFactory(new EnumRetrofitConverterFactory())
                 .build();

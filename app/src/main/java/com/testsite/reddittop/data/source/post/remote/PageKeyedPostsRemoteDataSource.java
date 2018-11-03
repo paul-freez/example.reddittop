@@ -1,6 +1,7 @@
 package com.testsite.reddittop.data.source.post.remote;
 
 import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.data.source.BaseReportingDataSource;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.post.remote.model.RedditListingResponse;
 
@@ -15,23 +16,19 @@ import retrofit2.Response;
 /**
  * Created by paulf
  */
-public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, RedditPost> {
+public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, RedditPost> implements BaseReportingDataSource {
 
     private final int MAX = 50;
 
     private RedditApi api;
 
-    private MutableLiveData<Boolean> loadingState;
+    private MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
+    private MutableLiveData<String> errorMessenger = new MutableLiveData<>();
 
     private int fetchedItemsCount = 0;  // Tracking for the successfully fetched items
 
     public PageKeyedPostsRemoteDataSource(RedditApi api) {
         this.api = api;
-        loadingState = new MutableLiveData<>();
-    }
-
-    public LiveData<Boolean> getLoadingState() {
-        return loadingState;
     }
 
     @Override
@@ -56,7 +53,7 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
                     @Override
                     public void onFailure(Call<RedditListingResponse> call, Throwable t) {
                         loadingState.postValue(false);
-                        // TODO: Handle
+                        errorMessenger.postValue(t.getMessage());
                     }
                 });
     }
@@ -109,8 +106,18 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
                     @Override
                     public void onFailure(Call<RedditListingResponse> call, Throwable t) {
                         loadingState.postValue(false);
-                        // TODO: Handle
+                        errorMessenger.postValue(t.getMessage());
                     }
                 });
+    }
+
+    @Override
+    public LiveData<String> getErrorMessenger() {
+        return errorMessenger;
+    }
+
+    @Override
+    public LiveData<Boolean> getLoaderHandler() {
+        return loadingState;
     }
 }
