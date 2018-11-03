@@ -3,6 +3,7 @@ package com.testsite.reddittop.data.source.client.remote;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.client.ClientDataSource;
 import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
+import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public class ClientRemoteDataSource implements ClientDataSource {
     private MutableLiveData<OAuthToken> token = new MutableLiveData<>();
 
     private MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
-    private MutableLiveData<String> errorMessenger = new MutableLiveData<>();
+    private MutableLiveData<ErrorHandler> errorMessenger = new MutableLiveData<>();
 
     public ClientRemoteDataSource(RedditApi api) {
         this.api = api;
@@ -53,13 +54,13 @@ public class ClientRemoteDataSource implements ClientDataSource {
             @Override
             public void onFailure(Call<OAuthToken> call, Throwable t) {
                 loadingState.setValue(false);
-                errorMessenger.setValue(t.getMessage());
+                errorMessenger.setValue(new ErrorHandler(t));
             }
         });
     }
 
     @Override
-    public LiveData<String> getErrorMessenger() {
+    public LiveData<ErrorHandler> getErrorMessenger() {
         return errorMessenger;
     }
 

@@ -19,7 +19,21 @@ import retrofit2.Retrofit;
 /**
  * Created by paulf
  */
-public class ErrorHandlingAdapter {
+public class ErrorHandler {
+
+    private Throwable exception;
+
+    public ErrorHandler(Throwable exception) {
+        this.exception = exception;
+    }
+
+    public String getMessage() {
+        return exception.getMessage();
+    }
+
+    public Throwable getException() {
+        return exception;
+    }
 
     public static class ErrorHandlingCallAdapterFactory extends CallAdapter.Factory {
 
@@ -77,12 +91,9 @@ public class ErrorHandlingAdapter {
                                     callback.onResponse(ErrorHandlingCall.this, response);
 
                                     // Exceptions
-                                } else if (code == 401) {
+                                } else  if (code == 403) {
                                     callback.onFailure(ErrorHandlingCall.this,
-                                            new RuntimeException(App.getContext().getString(R.string.error_unauthenticated)));
-                                } else if (code == 403) {
-                                    callback.onFailure(ErrorHandlingCall.this,
-                                            new RuntimeException(App.getContext().getString(R.string.error_unauthorized)));
+                                            new UnauthorizedException());
                                 } else if (code >= 500 && code < 600) {
                                     callback.onFailure(ErrorHandlingCall.this,
                                             new RuntimeException(App.getContext().getString(R.string.error_servererror)));
@@ -144,7 +155,14 @@ public class ErrorHandlingAdapter {
         }
     }
 
-    public static final class NetworkErrorException extends Exception {
+    public static final class UnauthorizedException extends RuntimeException {
+        @Override
+        public String getMessage() {
+            return App.getContext().getString(R.string.error_unauthorized);
+        }
+    }
+
+    public static final class NetworkErrorException extends RuntimeException {
 
         private IOException detailedException;
 
@@ -162,7 +180,7 @@ public class ErrorHandlingAdapter {
         }
     }
 
-    public static final class UnexpectedErrorException extends Exception {
+    public static final class UnexpectedErrorException extends RuntimeException {
 
         private String detailedResponse;
 

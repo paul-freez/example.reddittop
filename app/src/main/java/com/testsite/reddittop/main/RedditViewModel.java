@@ -10,6 +10,7 @@ import com.testsite.reddittop.data.source.client.RedditClientRepository;
 import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
 import com.testsite.reddittop.data.source.post.RedditPostsRepository;
 import com.testsite.reddittop.utils.CustomTabsInstance;
+import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
 import java.util.concurrent.Executors;
 
@@ -62,7 +63,7 @@ public class RedditViewModel extends ViewModel {
 
     private MutableLiveData<CustomTabsInstance.ChromTabsIntent<RedditPost>> externalIntent = new MutableLiveData<>();
 
-    private MediatorLiveData<String> errorMessenger = new MediatorLiveData<>();
+    private MediatorLiveData<ErrorHandler> errorHandler = new MediatorLiveData<>();
 
     public RedditViewModel() {
         setupLoaders();
@@ -85,14 +86,14 @@ public class RedditViewModel extends ViewModel {
         LiveData<Boolean> loadingStateAuth = Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<Boolean>>() {
             @Override
             public LiveData<Boolean> apply(UIListing<OAuthToken> input) {
-                return input.getLoadState();
+                return input.getLoadStateHandler();
             }
         });
         // Loader for posts
         LiveData<Boolean> loadingStatePosts = Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<Boolean>>() {
             @Override
             public LiveData<Boolean> apply(UIListing<PagedList<RedditPost>> input) {
-                return input.getLoadState();
+                return input.getLoadStateHandler();
             }
         });
 
@@ -132,33 +133,40 @@ public class RedditViewModel extends ViewModel {
     }
 
     private void setupErrorMassaging() {
-        Observer<String> simpleMessagingObserver = new Observer<String>() {
+        Observer<ErrorHandler> simpleMessagingObserver = new Observer<ErrorHandler>() {
             @Override
-            public void onChanged(String value) {
-                errorMessenger.setValue(value);
+            public void onChanged(ErrorHandler value) {
+                errorHandler.setValue(value);
             }
         };
 
         //Loader for auth
-        LiveData<String> errorMessAuth = Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<String>>() {
+        LiveData<ErrorHandler> errorMessAuth = Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<ErrorHandler>>() {
             @Override
-            public LiveData<String> apply(UIListing<OAuthToken> input) {
-                return input.getErrorMessage();
+            public LiveData<ErrorHandler> apply(UIListing<OAuthToken> input) {
+                return input.getErrorHandler();
             }
         });
         // Loader for posts
-        LiveData<String> errorMessPosts = Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<String>>() {
+        LiveData<ErrorHandler> errorMessPosts = Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<ErrorHandler>>() {
             @Override
-            public LiveData<String> apply(UIListing<PagedList<RedditPost>> input) {
-                return input.getErrorMessage();
+            public LiveData<ErrorHandler> apply(UIListing<PagedList<RedditPost>> input) {
+                return input.getErrorHandler();
             }
         });
 
-        errorMessenger.addSource(errorMessAuth, simpleMessagingObserver);
-        errorMessenger.addSource(errorMessPosts, simpleMessagingObserver);
+        errorHandler.addSource(errorMessAuth, simpleMessagingObserver);
+        errorHandler.addSource(errorMessPosts, simpleMessagingObserver);
     }
 
     public void start() {
+        // Fetch new data only when no or expired token available - otherwise everything is set-up already
+        if (token.getValue() == null || token.getValue().isExpired()) {
+            authorize();
+        }
+    }
+
+    public void authorize() {
         auth.setValue(System.currentTimeMillis());
     }
 
@@ -174,8 +182,8 @@ public class RedditViewModel extends ViewModel {
         return loadingState;
     }
 
-    public MediatorLiveData<String> getErrorMessenger() {
-        return errorMessenger;
+    public MediatorLiveData<ErrorHandler> getErrorHandler() {
+        return errorHandler;
     }
 
     public void openPost(RedditPost post) {

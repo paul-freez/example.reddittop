@@ -1,6 +1,7 @@
 package com.testsite.reddittop.data.source;
 
 import com.testsite.reddittop.data.source.api.RedditApi;
+import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
@@ -42,10 +43,10 @@ public abstract class BaseRepository<D extends BaseReportingDataSource, T extend
         });
     }
 
-    protected LiveData<String> getMessengerHandler() {
-        return Transformations.switchMap(sourceFactory.getSourceLiveData(), new Function<D, LiveData<String>>() {
+    protected LiveData<ErrorHandler> getMessengerHandler() {
+        return Transformations.switchMap(sourceFactory.getSourceLiveData(), new Function<D, LiveData<ErrorHandler>>() {
             @Override
-            public LiveData<String> apply(D input) {
+            public LiveData<ErrorHandler> apply(D input) {
                 return input.getErrorMessenger();
             }
         });

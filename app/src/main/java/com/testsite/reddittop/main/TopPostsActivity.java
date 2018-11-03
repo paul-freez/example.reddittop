@@ -11,6 +11,7 @@ import com.testsite.reddittop.data.RedditPost;
 import com.testsite.reddittop.databinding.ActivityTopListBinding;
 import com.testsite.reddittop.utils.CustomTabsInstance;
 import com.testsite.reddittop.utils.OnPostClickListener;
+import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import saschpe.android.customtabs.CustomTabsHelper;
+import timber.log.Timber;
 
 public class TopPostsActivity extends AppCompatActivity {
 
@@ -60,10 +62,17 @@ public class TopPostsActivity extends AppCompatActivity {
             }
         });
 
-        postsViewModel.getErrorMessenger().observe(this, new Observer<String>() {
+        postsViewModel.getErrorHandler().observe(this, new Observer<ErrorHandler>() {
             @Override
-            public void onChanged(String message) {
-                Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_LONG).show();
+            public void onChanged(ErrorHandler errorHandler) {
+                if (errorHandler.getException() instanceof ErrorHandler.UnauthorizedException){
+                    // Try re-authorize
+                    Timber.d("%s. Retrying...", errorHandler.getMessage());
+                    postsViewModel.authorize();
+
+                } else {
+                    Snackbar.make(binding.getRoot(), errorHandler.getMessage(), Snackbar.LENGTH_LONG).show();
+                }
             }
         });
     }

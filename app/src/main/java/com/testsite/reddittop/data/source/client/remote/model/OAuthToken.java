@@ -19,11 +19,18 @@ public class OAuthToken {
 
     @SerializedName("expires_in")
     @Expose
-    private long expiresIn; // TODO: Make use of this field
+    private long expiresIn;
 
     @SerializedName("token_type")
     @Expose
     private String type;
+
+    private final long creationTime;
+
+    public OAuthToken() {
+        // Response time and creation time shouldn't be much different
+        creationTime = System.currentTimeMillis();
+    }
 
     /**
      * Returns token representation.
@@ -33,8 +40,8 @@ public class OAuthToken {
         return type + " " + token;
     }
 
-    public long getExpiresIn() {
-        return expiresIn;
+    public boolean isExpired() {
+        return creationTime + TimeUnit.SECONDS.toMillis(expiresIn) - System.currentTimeMillis() <= 0 ;
     }
 
     @NonNull

@@ -6,7 +6,7 @@ import com.testsite.reddittop.BuildConfig;
 import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
 import com.testsite.reddittop.utils.connectivity.ConnectivityInterceptor;
 import com.testsite.reddittop.utils.connectivity.EnumRetrofitConverterFactory;
-import com.testsite.reddittop.utils.connectivity.ErrorHandlingAdapter;
+import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -38,7 +38,7 @@ public class RedditApiFactory {
                         Request originalRequest = chain.request();
                         Request requestWithUserAgent = originalRequest.newBuilder()
                                 // Updating User-Agent according to Reddit API rules
-                                .header("User-Agent", String.format(Locale.US, "android:%s:v:%s (by AnonymousUser)",
+                                .header("User-Agent", String.format(Locale.US, "android:%s:v:%s (by user_name  )",
                                         BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME))
                                 // Authorization
                                 .header("Authorization", (token == null ?
@@ -54,7 +54,7 @@ public class RedditApiFactory {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .client(client)
-                .addCallAdapterFactory(new ErrorHandlingAdapter.ErrorHandlingCallAdapterFactory())
+                .addCallAdapterFactory(new ErrorHandler.ErrorHandlingCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addConverterFactory(new EnumRetrofitConverterFactory())
                 .build();

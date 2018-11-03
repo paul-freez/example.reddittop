@@ -5,7 +5,6 @@
 
     <string name="error_noconnection">No network available, please check your WiFi or Data connection</string>
     <string name="error_network">Network error</string>
-    <string name="error_unauthenticated">Unauthenticated</string>
     <string name="error_unauthorized">Unauthorized</string>
     <string name="error_unexpected">Unexpected response</string>
     <string name="error_servererror">Server error</string>

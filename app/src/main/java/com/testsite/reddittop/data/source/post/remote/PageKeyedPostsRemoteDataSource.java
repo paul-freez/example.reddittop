@@ -4,6 +4,7 @@ import com.testsite.reddittop.data.RedditPost;
 import com.testsite.reddittop.data.source.BaseReportingDataSource;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.post.remote.model.RedditListingResponse;
+import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -23,7 +24,7 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
     private RedditApi api;
 
     private MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
-    private MutableLiveData<String> errorMessenger = new MutableLiveData<>();
+    private MutableLiveData<ErrorHandler> errorMessenger = new MutableLiveData<>();
 
     private int fetchedItemsCount = 0;  // Tracking for the successfully fetched items
 
@@ -53,35 +54,13 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
                     @Override
                     public void onFailure(Call<RedditListingResponse> call, Throwable t) {
                         loadingState.postValue(false);
-                        errorMessenger.postValue(t.getMessage());
+                        errorMessenger.postValue(new ErrorHandler(t));
                     }
                 });
     }
 
     @Override
     public void loadBefore(@NonNull LoadParams<String> params, @NonNull final LoadCallback<String, RedditPost> callback) {
-        loadingState.postValue(true);
-
-        api.getPreviousTopPosts(RedditApi.TimeFilter.DAY, params.key, params.requestedLoadSize)
-                .enqueue(new Callback<RedditListingResponse>() {
-                    @Override
-                    public void onResponse(Call<RedditListingResponse> call, Response<RedditListingResponse> response) {
-                        loadingState.postValue(false);
-
-                        if (response.isSuccessful()) {
-                            RedditListingResponse.ResponseData responseData = response.body().getData();
-                            callback.onResult(responseData.getContent(), responseData.getBeforeKey());
-                        } else {
-                            onFailure(call, new Exception("Error code: " + response.code()));
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<RedditListingResponse> call, Throwable t) {
-                        loadingState.postValue(false);
-                        // TODO: Handle
-                    }
-                });
     }
 
     @Override
@@ -106,13 +85,13 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
                     @Override
                     public void onFailure(Call<RedditListingResponse> call, Throwable t) {
                         loadingState.postValue(false);
-                        errorMessenger.postValue(t.getMessage());
+                        errorMessenger.postValue(new ErrorHandler(t));
                     }
                 });
     }
 
     @Override
-    public LiveData<String> getErrorMessenger() {
+    public LiveData<ErrorHandler> getErrorMessenger() {
         return errorMessenger;
     }
 
