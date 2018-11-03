@@ -24,6 +24,7 @@ import androidx.paging.PagedList;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import saschpe.android.customtabs.CustomTabsHelper;
 import timber.log.Timber;
 
@@ -116,6 +117,16 @@ public class TopPostsActivity extends AppCompatActivity {
                                 // TODO: open in Reddit
                             }
                         });
+            }
+        });
+
+        binding.srlRefresh.setColorSchemeResources(R.color.colorPrimary);
+        binding.srlRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                binding.srlRefresh.setRefreshing(true);
+
+                postsViewModel.loadPosts();
             }
         });
     }

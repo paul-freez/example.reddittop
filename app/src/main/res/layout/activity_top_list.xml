@@ -2,7 +2,8 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="androidx.core.widget.ContentLoadingProgressBar"/>
 
         <variable
             name="viewmodel"
@@ -14,6 +15,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:background="?attr/colorAccent">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -31,21 +33,34 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_top"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srl_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:itemCount="4"
-            tools:layoutmanage="LinerLayoutManager"
-            tools:listitem="@layout/item_reddit_post"/>
+            app:toggleRefresh="@{viewmodel.loadingState}">
 
-        <View
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_top"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:itemCount="4"
+                tools:layoutmanage="LinerLayoutManager"
+                tools:listitem="@layout/item_reddit_post"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/loader"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#a9000000"
-            android:visibility="@{viewmodel.loadingState ? View.VISIBLE : View.GONE}"/>
+            style="?android:attr/android:progressBarStyle"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorPrimary"
+            android:indeterminateTintMode="src_in"
+            app:layout_anchor="@+id/srl_refresh"
+            app:layout_anchorGravity="center"
+            app:toggleView="@{viewmodel.loadingState}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
