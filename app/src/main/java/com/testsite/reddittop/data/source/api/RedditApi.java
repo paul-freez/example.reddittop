@@ -16,7 +16,7 @@ import retrofit2.http.Query;
  */
 public interface RedditApi {
 
-    String CLIENT_ID = "your_client_id  ";
+    String CLIENT_ID = "your_client_id";
 
     String GRANT_CLIENT = "https://oauth.reddit.com/grants/installed_client";
 

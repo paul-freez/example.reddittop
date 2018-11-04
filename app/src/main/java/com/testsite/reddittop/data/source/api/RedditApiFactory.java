@@ -38,7 +38,7 @@ public class RedditApiFactory {
                         Request originalRequest = chain.request();
                         Request requestWithUserAgent = originalRequest.newBuilder()
                                 // Updating User-Agent according to Reddit API rules
-                                .header("User-Agent", String.format(Locale.US, "android:%s:v:%s (by user_name  )",
+                                .header("User-Agent", String.format(Locale.US, "android:%s:v:%s (by user_name)",
                                         BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME))
                                 // Authorization
                                 .header("Authorization", (token == null ?
