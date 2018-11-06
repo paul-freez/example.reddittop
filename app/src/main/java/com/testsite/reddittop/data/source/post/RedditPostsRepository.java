@@ -21,7 +21,7 @@ public class RedditPostsRepository extends BaseRepository<PageKeyedPostsRemoteDa
 
     private static RedditPostsRepository INSTANCE;
 
-    private Executor networkExecutor;
+    private final Executor networkExecutor;
 
     public static RedditPostsRepository getInstance(RedditApi api, Executor networkExecutor) {
         if (INSTANCE == null) {

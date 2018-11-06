@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 /**
  * Created by paulf
  */
+@SuppressWarnings("unused")
 public class OAuthToken {
 
     @SerializedName("access_token")

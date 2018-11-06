@@ -2,6 +2,10 @@ package com.testsite.reddittop.utils.connectivity;
 
 import com.testsite.reddittop.App;
 import com.testsite.reddittop.R;
+import com.testsite.reddittop.utils.exceptions.NetworkErrorException;
+import com.testsite.reddittop.utils.exceptions.NoConnectivityException;
+import com.testsite.reddittop.utils.exceptions.UnauthorizedException;
+import com.testsite.reddittop.utils.exceptions.UnexpectedErrorException;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -21,7 +25,7 @@ import retrofit2.Retrofit;
  */
 public class ErrorHandler {
 
-    private Throwable exception;
+    private final Throwable exception;
 
     public ErrorHandler(Throwable exception) {
         this.exception = exception;
@@ -67,12 +71,12 @@ public class ErrorHandler {
         }
     }
 
-    public static class ErrorHandlingCall<T> implements Call<T> {
+    static class ErrorHandlingCall<T> implements Call<T> {
 
         private final Call<T> delegate;
         private final Executor executor;
 
-        public ErrorHandlingCall(Call<T> delegate, Executor executor) {
+        ErrorHandlingCall(Call<T> delegate, Executor executor) {
             this.delegate = delegate;
             this.executor = executor;
         }
@@ -112,7 +116,7 @@ public class ErrorHandler {
                         executor.execute(new Runnable() {
                             @Override
                             public void run() {
-                                if (t instanceof IOException) {
+                                if (t instanceof IOException && !(t instanceof NoConnectivityException)) {
                                     callback.onFailure(ErrorHandlingCall.this, new NetworkErrorException((IOException) t));
                                 } else {
                                     callback.onFailure(ErrorHandlingCall.this, t);
@@ -155,46 +159,4 @@ public class ErrorHandler {
         }
     }
 
-    public static final class UnauthorizedException extends RuntimeException {
-        @Override
-        public String getMessage() {
-            return App.getContext().getString(R.string.error_unauthorized);
-        }
-    }
-
-    public static final class NetworkErrorException extends RuntimeException {
-
-        private IOException detailedException;
-
-        public NetworkErrorException(IOException detailedException) {
-            this.detailedException = detailedException;
-        }
-
-        public IOException getDetailedException() {
-            return detailedException;
-        }
-
-        @Override
-        public String getMessage() {
-            return App.getContext().getString(R.string.error_network);
-        }
-    }
-
-    public static final class UnexpectedErrorException extends RuntimeException {
-
-        private String detailedResponse;
-
-        public UnexpectedErrorException(String detailedResponse) {
-            this.detailedResponse = detailedResponse;
-        }
-
-        public String getDetailedResponse() {
-            return detailedResponse;
-        }
-
-        @Override
-        public String getMessage() {
-            return App.getContext().getString(R.string.error_unexpected);
-        }
-    }
 }

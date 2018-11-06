@@ -21,10 +21,10 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
 
     private final int MAX = 50;
 
-    private RedditApi api;
+    private final RedditApi api;
 
-    private MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
-    private MutableLiveData<ErrorHandler> errorMessenger = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
+    private final MutableLiveData<ErrorHandler> errorMessenger = new MutableLiveData<>();
 
     private int fetchedItemsCount = 0;  // Tracking for the successfully fetched items
 
@@ -42,7 +42,7 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
                     public void onResponse(Call<RedditListingResponse> call, Response<RedditListingResponse> response) {
                         loadingState.postValue(false);
 
-                        if (response.isSuccessful()) {
+                        if (response.isSuccessful() && response.body() != null) {
                             RedditListingResponse.ResponseData responseData = response.body().getData();
                             fetchedItemsCount = responseData.getContent().size();
                             callback.onResult(responseData.getContent(), responseData.getBeforeKey(), responseData.getAfterKey());
@@ -73,7 +73,7 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
                     public void onResponse(Call<RedditListingResponse> call, Response<RedditListingResponse> response) {
                         loadingState.postValue(false);
 
-                        if (response.isSuccessful()) {
+                        if (response.isSuccessful() && response.body() != null) {
                             RedditListingResponse.ResponseData responseData = response.body().getData();
                             fetchedItemsCount += responseData.getContent().size();
                             callback.onResult(responseData.getContent(), fetchedItemsCount >= MAX ? null : responseData.getAfterKey());

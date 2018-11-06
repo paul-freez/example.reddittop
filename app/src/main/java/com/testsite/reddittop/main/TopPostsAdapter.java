@@ -33,8 +33,6 @@ public class TopPostsAdapter extends PagedListAdapter<RedditPost, TopPostsAdapte
 
     protected TopPostsAdapter() {
         super(DIFF_CALLBACK);
-
-
     }
 
     @NonNull
@@ -58,9 +56,9 @@ public class TopPostsAdapter extends PagedListAdapter<RedditPost, TopPostsAdapte
 
     static class PostViewHolder extends RecyclerView.ViewHolder {
 
-        private ItemRedditPostBinding binding;
+        private final ItemRedditPostBinding binding;
 
-        public PostViewHolder(ItemRedditPostBinding binding) {
+        PostViewHolder(ItemRedditPostBinding binding) {
             super(binding.getRoot());
 
             this.binding = binding;

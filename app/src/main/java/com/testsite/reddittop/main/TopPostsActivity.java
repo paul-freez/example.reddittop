@@ -12,6 +12,7 @@ import com.testsite.reddittop.databinding.ActivityTopListBinding;
 import com.testsite.reddittop.utils.CustomTabsInstance;
 import com.testsite.reddittop.utils.OnPostClickListener;
 import com.testsite.reddittop.utils.connectivity.ErrorHandler;
+import com.testsite.reddittop.utils.exceptions.UnauthorizedException;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -66,7 +67,7 @@ public class TopPostsActivity extends AppCompatActivity {
         postsViewModel.getErrorHandler().observe(this, new Observer<ErrorHandler>() {
             @Override
             public void onChanged(ErrorHandler errorHandler) {
-                if (errorHandler.getException() instanceof ErrorHandler.UnauthorizedException){
+                if (errorHandler.getException() instanceof UnauthorizedException){
                     // Try re-authorize
                     Timber.d("%s. Retrying...", errorHandler.getMessage());
                     postsViewModel.authorize();

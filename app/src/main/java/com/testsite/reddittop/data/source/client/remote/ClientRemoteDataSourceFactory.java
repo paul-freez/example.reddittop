@@ -15,9 +15,9 @@ import androidx.lifecycle.MutableLiveData;
  */
 public class ClientRemoteDataSourceFactory implements ReportingDataSourceFactory<ClientRemoteDataSource> {
 
-    private RedditApi api;
+    private final RedditApi api;
 
-    private MutableLiveData<ClientRemoteDataSource> sourceLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ClientRemoteDataSource> sourceLiveData = new MutableLiveData<>();
 
     public ClientRemoteDataSourceFactory(RedditApi api) {
         this.api = api;

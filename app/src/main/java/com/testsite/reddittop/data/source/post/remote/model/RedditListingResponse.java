@@ -28,12 +28,12 @@ public class RedditListingResponse {
         @Expose
         private List<DataBody> content;
 
-        public static class DataBody {
+        static class DataBody {
             @SerializedName("data")
             @Expose
             private RedditPost post;
 
-            public RedditPost getPost() {
+            RedditPost getPost() {
                 return post;
             }
         }

@@ -5,7 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.testsite.reddittop.App;
-import com.testsite.reddittop.R;
+import com.testsite.reddittop.utils.exceptions.NoConnectivityException;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ import okhttp3.Response;
  */
 public class ConnectivityInterceptor implements Interceptor {
 
-    private NetworkConnectivityManager connectivityManager;
+    private final NetworkConnectivityManager connectivityManager;
 
     public ConnectivityInterceptor() {
         this.connectivityManager = new NetworkConnectivityManager();
@@ -46,10 +46,4 @@ public class ConnectivityInterceptor implements Interceptor {
         }
     }
 
-    public static class NoConnectivityException extends IOException {
-        @Override
-        public String getMessage() {
-            return App.getContext().getString(R.string.error_noconnection);
-        }
-    }
 }

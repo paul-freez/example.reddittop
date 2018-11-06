@@ -8,4 +8,6 @@
     <string name="error_unauthorized">Unauthorized</string>
     <string name="error_unexpected">Unexpected response</string>
     <string name="error_servererror">Server error</string>
+    <string name="item_post_by">by</string>
+    <string name="item_post_comments">comments</string>
 </resources>

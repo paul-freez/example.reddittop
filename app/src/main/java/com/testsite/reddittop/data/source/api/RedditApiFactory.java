@@ -11,7 +11,8 @@ import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 import java.io.IOException;
 import java.util.Locale;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -26,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class RedditApiFactory {
 
-    public static RedditApi create(String url, final @Nullable OAuthToken token) {
+    public static RedditApi create(String url, final @NonNull LiveData<OAuthToken> token) {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
@@ -41,9 +42,9 @@ public class RedditApiFactory {
                                 .header("User-Agent", String.format(Locale.US, "android:%s:v:%s (by user_name)",
                                         BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME))
                                 // Authorization
-                                .header("Authorization", (token == null ?
+                                .header("Authorization", (token.getValue() == null ?
                                         Credentials.basic(RedditApi.CLIENT_ID, "")
-                                        : token.getToken()))
+                                        : token.getValue().getToken()))
                                 .build();
                         return chain.proceed(requestWithUserAgent);
                     }

@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:toggleRefresh="@{viewmodel.loadingState}">
+            app:toggleRefresh="@{safeUnbox(viewmodel.loadingState)}">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_top"
@@ -60,7 +60,7 @@
             android:indeterminateTintMode="src_in"
             app:layout_anchor="@+id/srl_refresh"
             app:layout_anchorGravity="center"
-            app:toggleView="@{viewmodel.loadingState}"/>
+            app:toggleView="@{safeUnbox(viewmodel.loadingState)}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

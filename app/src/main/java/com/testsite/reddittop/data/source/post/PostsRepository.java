@@ -8,6 +8,6 @@ import androidx.paging.PagedList;
 /**
  * Created by paulf
  */
-public interface PostsRepository {
+interface PostsRepository {
     UIListing<PagedList<RedditPost>> getTopPosts(int size);
 }

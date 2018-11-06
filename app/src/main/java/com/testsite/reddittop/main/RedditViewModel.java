@@ -29,41 +29,41 @@ import androidx.paging.PagedList;
  */
 public class RedditViewModel extends ViewModel {
 
-    private MutableLiveData<Long> auth = new MutableLiveData<>(); // Trigger to start authentication
-    private MutableLiveData<Long> fetch = new MutableLiveData<>();  // Trigger to start fetching
+    private final MutableLiveData<Long> auth = new MutableLiveData<>(); // Trigger to start authentication
+    private final MutableLiveData<Long> fetch = new MutableLiveData<>();  // Trigger to start fetching
 
     // Main repo results
-    private MediatorLiveData<UIListing<PagedList<RedditPost>>> repoResult = new MediatorLiveData<>();
+    private final MediatorLiveData<UIListing<PagedList<RedditPost>>> repoResult = new MediatorLiveData<>();
     // Main loader
-    private MediatorLiveData<Boolean> loadingState = new MediatorLiveData<>();
+    private final MediatorLiveData<Boolean> loadingState = new MediatorLiveData<>();
 
-    private LiveData<UIListing<OAuthToken>> authResult = Transformations.map(auth, new Function<Long, UIListing<OAuthToken>>() {
+    private final LiveData<UIListing<OAuthToken>> authResult = Transformations.map(auth, new Function<Long, UIListing<OAuthToken>>() {
         @Override
         public UIListing<OAuthToken> apply(Long input) {
             return clientRepository.authenticate();
         }
     });
 
-    private LiveData<OAuthToken> token = Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<OAuthToken>>() {
+    private final LiveData<OAuthToken> token = Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<OAuthToken>>() {
         @Override
         public LiveData<OAuthToken> apply(UIListing<OAuthToken> input) {
             return input.getContent();
         }
     });
 
-    private LiveData<PagedList<RedditPost>> posts = Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<PagedList<RedditPost>>>() {
+    private final LiveData<PagedList<RedditPost>> posts = Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<PagedList<RedditPost>>>() {
         @Override
         public LiveData<PagedList<RedditPost>> apply(UIListing<PagedList<RedditPost>> input) {
             return input.getContent();
         }
     });
 
-    private RedditClientRepository clientRepository;
-    private RedditPostsRepository postsRepository;
+    private final RedditClientRepository clientRepository;
+    private final RedditPostsRepository postsRepository;
 
-    private MutableLiveData<CustomTabsInstance.ChromTabsIntent<RedditPost>> externalIntent = new MutableLiveData<>();
+    private final MutableLiveData<CustomTabsInstance.ChromTabsIntent<RedditPost>> externalIntent = new MutableLiveData<>();
 
-    private MediatorLiveData<ErrorHandler> errorHandler = new MediatorLiveData<>();
+    private final MediatorLiveData<ErrorHandler> errorHandler = new MediatorLiveData<>();
 
     public RedditViewModel() {
         setupLoaders();
@@ -71,7 +71,9 @@ public class RedditViewModel extends ViewModel {
         setupErrorMassaging();
 
         this.clientRepository = RedditClientRepository.getInstance(
-                RedditApiFactory.create(RedditApi.BASE_URL, null));
+                RedditApiFactory.create(RedditApi.BASE_URL, new MutableLiveData<OAuthToken>()));    // We don't need actual token here
+        postsRepository = RedditPostsRepository.getInstance(RedditApiFactory.create(RedditApi.OAUTH_URL, token),
+                Executors.newFixedThreadPool(5));
     }
 
     private void setupLoaders() {
@@ -113,8 +115,6 @@ public class RedditViewModel extends ViewModel {
         LiveData<UIListing<PagedList<RedditPost>>> repoResultInit = Transformations.switchMap(token, new Function<OAuthToken, LiveData<UIListing<PagedList<RedditPost>>>>() {
             @Override
             public LiveData<UIListing<PagedList<RedditPost>>> apply(OAuthToken token) {
-                postsRepository = RedditPostsRepository.getInstance(RedditApiFactory.create(RedditApi.OAUTH_URL, token),
-                        Executors.newFixedThreadPool(5));
                 LiveData<UIListing<PagedList<RedditPost>>> res = new MutableLiveData<>();
                 ((MutableLiveData<UIListing<PagedList<RedditPost>>>) res).postValue(postsRepository.getTopPosts(5));
                 return res;

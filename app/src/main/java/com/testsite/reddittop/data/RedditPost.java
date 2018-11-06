@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 /**
  * Created by paulf
  */
+@SuppressWarnings("unused")
 public class RedditPost {
 
     @SerializedName("title")
@@ -34,10 +35,11 @@ public class RedditPost {
 
     private String createdAgo;
 
+    @SuppressWarnings("FieldCanBeLocal")
     @SerializedName("thumbnail")
     @Expose
     private @NonNull
-    String thumbnail;
+    String thumbnail = "";
 
     @SerializedName("score")
     @Expose

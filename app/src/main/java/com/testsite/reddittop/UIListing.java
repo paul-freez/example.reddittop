@@ -11,11 +11,11 @@ import androidx.lifecycle.LiveData;
  */
 public class UIListing<T> extends LiveData<T> {
 
-    private LiveData<T> pagedList;
+    private final LiveData<T> pagedList;
 
-    private LiveData<Boolean> loadState;
+    private final LiveData<Boolean> loadState;
 
-    private LiveData<ErrorHandler> errorMessage;
+    private final LiveData<ErrorHandler> errorMessage;
 
     public UIListing(LiveData<T> pagedList, LiveData<Boolean> loadState, LiveData<ErrorHandler> errorMessage) {
         this.pagedList = pagedList;

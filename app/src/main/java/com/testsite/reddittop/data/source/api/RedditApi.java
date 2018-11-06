@@ -36,11 +36,6 @@ public interface RedditApi {
                                                 @Query("after") String lastElement,
                                                 @Query("limit") int size);
 
-    @GET(POSTS_TOP)
-    Call<RedditListingResponse> getPreviousTopPosts(@Query("t")TimeFilter time,
-                                                    @Query("before") String lastElement,
-                                                    @Query("limit") int size);
-
     enum TimeFilter {
         @SerializedName("all")
         ALL,

@@ -22,8 +22,8 @@ public class CustomTabsInstance {
     }
 
     public static class ChromTabsIntent<T> {
-        private CustomTabsIntent intent;
-        private T content;
+        private final CustomTabsIntent intent;
+        private final T content;
 
         public ChromTabsIntent(CustomTabsIntent intent, T content) {
             this.intent = intent;

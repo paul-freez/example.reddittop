@@ -12,7 +12,7 @@ import androidx.lifecycle.Transformations;
  */
 public abstract class BaseRepository<D extends BaseReportingDataSource, T extends ReportingDataSourceFactory<D>> {
 
-    private RedditApi api;
+    private final RedditApi api;
 
     private T sourceFactory;
 

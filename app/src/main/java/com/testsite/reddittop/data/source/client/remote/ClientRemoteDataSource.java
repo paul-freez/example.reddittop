@@ -17,12 +17,12 @@ import retrofit2.Callback;
  */
 public class ClientRemoteDataSource implements ClientDataSource {
 
-    private RedditApi api;
+    private final RedditApi api;
 
-    private MutableLiveData<OAuthToken> token = new MutableLiveData<>();
+    private final MutableLiveData<OAuthToken> token = new MutableLiveData<>();
 
-    private MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
-    private MutableLiveData<ErrorHandler> errorMessenger = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> loadingState = new MutableLiveData<>();
+    private final MutableLiveData<ErrorHandler> errorMessenger = new MutableLiveData<>();
 
     public ClientRemoteDataSource(RedditApi api) {
         this.api = api;

@@ -18,9 +18,9 @@ import androidx.paging.DataSource;
 public class PostsRemoteDataSourceFactory extends DataSource.Factory<String, RedditPost>
         implements ReportingDataSourceFactory<PageKeyedPostsRemoteDataSource> {
 
-    private RedditApi api;
+    private final RedditApi api;
 
-    private MutableLiveData<PageKeyedPostsRemoteDataSource> sourceLiveData = new MutableLiveData<>();
+    private final MutableLiveData<PageKeyedPostsRemoteDataSource> sourceLiveData = new MutableLiveData<>();
 
     public PostsRemoteDataSourceFactory(RedditApi api) {
         this.api = api;
