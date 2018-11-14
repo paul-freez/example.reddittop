@@ -2,16 +2,19 @@ package com.testsite.reddittop.main;
 
 import com.testsite.reddittop.App;
 import com.testsite.reddittop.R;
-import com.testsite.reddittop.UIListing;
+import com.testsite.reddittop.utils.models.UIListing;
 import com.testsite.reddittop.data.RedditPost;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.api.RedditApiFactory;
 import com.testsite.reddittop.data.source.client.RedditClientRepository;
 import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
 import com.testsite.reddittop.data.source.post.RedditPostsRepository;
+import com.testsite.reddittop.models.StatusAwareViewModel;
 import com.testsite.reddittop.utils.CustomTabsInstance;
 import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 import androidx.arch.core.util.Function;
@@ -21,21 +24,18 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModel;
 import androidx.paging.PagedList;
 
 /**
  * Created by paulf
  */
-public class RedditViewModel extends ViewModel {
+public class RedditViewModel extends StatusAwareViewModel {
 
     private final MutableLiveData<Long> auth = new MutableLiveData<>(); // Trigger to start authentication
     private final MutableLiveData<Long> fetch = new MutableLiveData<>();  // Trigger to start fetching
 
     // Main repo results
     private final MediatorLiveData<UIListing<PagedList<RedditPost>>> repoResult = new MediatorLiveData<>();
-    // Main loader
-    private final MediatorLiveData<Boolean> loadingState = new MediatorLiveData<>();
 
     private final LiveData<UIListing<OAuthToken>> authResult = Transformations.map(auth, new Function<Long, UIListing<OAuthToken>>() {
         @Override
@@ -63,12 +63,8 @@ public class RedditViewModel extends ViewModel {
 
     private final MutableLiveData<CustomTabsInstance.ChromTabsIntent<RedditPost>> externalIntent = new MutableLiveData<>();
 
-    private final MediatorLiveData<ErrorHandler> errorHandler = new MediatorLiveData<>();
-
     public RedditViewModel() {
-        setupLoaders();
         setupRepoCalls();
-        setupErrorMassaging();
 
         this.clientRepository = RedditClientRepository.getInstance(
                 RedditApiFactory.create(RedditApi.BASE_URL, new MutableLiveData<OAuthToken>()));    // We don't need actual token here
@@ -76,31 +72,42 @@ public class RedditViewModel extends ViewModel {
                 Executors.newFixedThreadPool(5));
     }
 
-    private void setupLoaders() {
-        Observer<Boolean> simpleLoaderObserver = new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean value) {
-                loadingState.setValue(value);
-            }
-        };
+    @Override
+    protected List<LiveData<Boolean>> provideLoaders() {
+        return Arrays.asList(
+                //Loader for auth
+                Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<Boolean>>() {
+                    @Override
+                    public LiveData<Boolean> apply(UIListing<OAuthToken> input) {
+                        return input.getLoadStateHandler();
+                    }
+                }),
+                // Loader for posts
+                Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<Boolean>>() {
+                    @Override
+                    public LiveData<Boolean> apply(UIListing<PagedList<RedditPost>> input) {
+                        return input.getLoadStateHandler();
+                    }
+                }));
+    }
 
-        //Loader for auth
-        LiveData<Boolean> loadingStateAuth = Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<Boolean>>() {
-            @Override
-            public LiveData<Boolean> apply(UIListing<OAuthToken> input) {
-                return input.getLoadStateHandler();
-            }
-        });
-        // Loader for posts
-        LiveData<Boolean> loadingStatePosts = Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<Boolean>>() {
-            @Override
-            public LiveData<Boolean> apply(UIListing<PagedList<RedditPost>> input) {
-                return input.getLoadStateHandler();
-            }
-        });
-
-        loadingState.addSource(loadingStateAuth, simpleLoaderObserver);
-        loadingState.addSource(loadingStatePosts, simpleLoaderObserver);
+    @Override
+    protected List<LiveData<ErrorHandler>> provideErrorHandlers() {
+        return Arrays.asList(
+                //Loader for auth
+                Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<ErrorHandler>>() {
+                    @Override
+                    public LiveData<ErrorHandler> apply(UIListing<OAuthToken> input) {
+                        return input.getErrorHandler();
+                    }
+                }),
+                // Loader for posts
+                Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<ErrorHandler>>() {
+                    @Override
+                    public LiveData<ErrorHandler> apply(UIListing<PagedList<RedditPost>> input) {
+                        return input.getErrorHandler();
+                    }
+                }));
     }
 
     private void setupRepoCalls() {
@@ -132,33 +139,6 @@ public class RedditViewModel extends ViewModel {
         repoResult.addSource(repoResultFetch, simpleRepoObserver);
     }
 
-    private void setupErrorMassaging() {
-        Observer<ErrorHandler> simpleMessagingObserver = new Observer<ErrorHandler>() {
-            @Override
-            public void onChanged(ErrorHandler value) {
-                errorHandler.setValue(value);
-            }
-        };
-
-        //Loader for auth
-        LiveData<ErrorHandler> errorMessAuth = Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<ErrorHandler>>() {
-            @Override
-            public LiveData<ErrorHandler> apply(UIListing<OAuthToken> input) {
-                return input.getErrorHandler();
-            }
-        });
-        // Loader for posts
-        LiveData<ErrorHandler> errorMessPosts = Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<ErrorHandler>>() {
-            @Override
-            public LiveData<ErrorHandler> apply(UIListing<PagedList<RedditPost>> input) {
-                return input.getErrorHandler();
-            }
-        });
-
-        errorHandler.addSource(errorMessAuth, simpleMessagingObserver);
-        errorHandler.addSource(errorMessPosts, simpleMessagingObserver);
-    }
-
     public void start() {
         // Fetch new data only when no or expired token available - otherwise everything is set-up already
         if (token.getValue() == null || token.getValue().isExpired()) {
@@ -176,14 +156,6 @@ public class RedditViewModel extends ViewModel {
 
     public LiveData<PagedList<RedditPost>> getPosts() {
         return posts;
-    }
-
-    public LiveData<Boolean> getLoadingState() {
-        return loadingState;
-    }
-
-    public MediatorLiveData<ErrorHandler> getErrorHandler() {
-        return errorHandler;
     }
 
     public void openPost(RedditPost post) {

@@ -1,4 +1,4 @@
-package com.testsite.reddittop;
+package com.testsite.reddittop.utils.models;
 
 import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 

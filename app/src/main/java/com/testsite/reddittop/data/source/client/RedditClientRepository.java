@@ -1,6 +1,6 @@
 package com.testsite.reddittop.data.source.client;
 
-import com.testsite.reddittop.UIListing;
+import com.testsite.reddittop.utils.models.UIListing;
 import com.testsite.reddittop.data.source.BaseRepository;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.client.remote.ClientRemoteDataSource;
