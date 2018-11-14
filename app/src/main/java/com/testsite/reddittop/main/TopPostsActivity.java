@@ -22,9 +22,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import saschpe.android.customtabs.CustomTabsHelper;
 import timber.log.Timber;
@@ -87,9 +84,7 @@ public class TopPostsActivity extends AppCompatActivity {
                 postsViewModel.openPost(post);
             }
         });
-        binding.rvTop.setAdapter(adapter);
-        binding.rvTop.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-        binding.rvTop.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        binding.setAdapter(adapter);
 
         postsViewModel.getPosts().observe(this, new Observer<PagedList<RedditPost>>() {
             @Override

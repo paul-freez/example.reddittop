@@ -8,6 +8,10 @@
         <variable
             name="viewmodel"
             type="com.testsite.reddittop.main.RedditViewModel"/>
+
+        <variable
+            name="adapter"
+            type="com.testsite.reddittop.main.TopPostsAdapter"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -42,10 +46,13 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_top"
+                useDefaultDivider="@{true}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:adapter="@{adapter}"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="4"
-                tools:layoutmanage="LinerLayoutManager"
                 tools:listitem="@layout/item_reddit_post"/>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

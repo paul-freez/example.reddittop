@@ -5,6 +5,9 @@ import android.widget.ImageView;
 
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.databinding.BindingAdapter;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 /**
@@ -40,6 +43,18 @@ public final class BindingUtils {
             pb.show();
         } else {
             pb.hide();
+        }
+    }
+
+    @BindingAdapter("useDefaultDivider")
+    public static void useDivider(RecyclerView rv, boolean useStandartDivider) {
+        RecyclerView.LayoutManager layoutManager = rv.getLayoutManager();
+        if (useStandartDivider && layoutManager != null) {
+            if (layoutManager instanceof LinearLayoutManager) {
+                rv.addItemDecoration(new DividerItemDecoration(rv.getContext(),
+                        ((LinearLayoutManager) layoutManager).getOrientation()));
+            }
+
         }
     }
 }
