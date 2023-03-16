@@ -59,7 +59,7 @@
 
         <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/loader"
-            style="?android:attr/android:progressBarStyle"
+            style="?android:attr/progressBarStyle"
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:indeterminate="true"

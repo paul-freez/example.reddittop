@@ -14,6 +14,7 @@ import java.lang.reflect.Type;
 import java.util.concurrent.Executor;
 
 import okhttp3.Request;
+import okio.Timeout;
 import retrofit2.Call;
 import retrofit2.CallAdapter;
 import retrofit2.Callback;
@@ -156,6 +157,11 @@ public class ErrorHandler {
         @Override
         public Request request() {
             return delegate.request();
+        }
+
+        @Override
+        public Timeout timeout() {
+            return null;
         }
     }
 

@@ -94,11 +94,14 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
         }
 
         @Override
-        public void onResult(@NonNull List<T> data, int position, int totalCount, @Nullable K previousPageKey, @Nullable K nextPageKey) {
+        public void onResult(@NonNull List<? extends T> data, @Nullable K k, @Nullable K nextPageKey) {
+            if (callback != null) {
+                callback.onResult(data, nextPageKey);
+            }
         }
 
         @Override
-        public void onResult(@NonNull List<T> data, @Nullable K previousPageKey, @Nullable K nextPageKey) {
+        public void onResult(@NonNull List<? extends T> data, int i, int i1, @Nullable K k, @Nullable K nextPageKey) {
             if (callback != null) {
                 callback.onResult(data, nextPageKey);
             }

@@ -95,7 +95,7 @@ public class TopPostsActivity extends AppCompatActivity {
         postsViewModel.getExternalIntent().observe(this, new Observer<CustomTabsInstance.ChromTabsIntent<RedditPost>>() {
             @Override
             public void onChanged(CustomTabsInstance.ChromTabsIntent<RedditPost> redditPostChromTabsIntent) {
-                CustomTabsHelper.openCustomTab(TopPostsActivity.this, redditPostChromTabsIntent.getIntent(),
+                CustomTabsHelper.Companion.openCustomTab(TopPostsActivity.this, redditPostChromTabsIntent.getIntent(),
                         Uri.parse(redditPostChromTabsIntent.getContent().getLink()),
                         new CustomTabsHelper.CustomTabFallback() {
                             @Override
