@@ -11,6 +11,6 @@ import java.io.IOException;
 public class NoConnectivityException extends IOException {
     @Override
     public String getMessage() {
-        return App.getContext().getString(R.string.error_noconnection);
+        return App.Companion.getAppContext().getString(R.string.error_noconnection);
     }
 }

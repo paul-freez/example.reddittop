@@ -20,6 +20,6 @@ public final class UnexpectedErrorException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return App.getContext().getString(R.string.error_unexpected);
+        return App.Companion.getAppContext().getString(R.string.error_unexpected);
     }
 }

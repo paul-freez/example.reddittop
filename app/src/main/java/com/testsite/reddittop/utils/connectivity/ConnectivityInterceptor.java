@@ -37,7 +37,7 @@ public class ConnectivityInterceptor implements Interceptor {
         private final ConnectivityManager cm;
 
         NetworkConnectivityManager() {
-            cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            cm = (ConnectivityManager) App.Companion.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         }
 
         boolean isConnected() {

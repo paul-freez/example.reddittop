@@ -9,6 +9,6 @@ import com.testsite.reddittop.R;
 public final class UnauthorizedException extends RuntimeException {
     @Override
     public String getMessage() {
-        return App.getContext().getString(R.string.error_unauthorized);
+        return App.Companion.getAppContext().getString(R.string.error_unauthorized);
     }
 }

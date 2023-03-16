@@ -101,7 +101,7 @@ public class ErrorHandler {
                                             new UnauthorizedException());
                                 } else if (code >= 500 && code < 600) {
                                     callback.onFailure(ErrorHandlingCall.this,
-                                            new RuntimeException(App.getContext().getString(R.string.error_servererror)));
+                                            new RuntimeException(App.Companion.getAppContext().getString(R.string.error_servererror)));
                                 } else {
                                     callback.onFailure(ErrorHandlingCall.this,
                                             new UnexpectedErrorException(response.message()));

@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
+
 /**
  * Created by paulf
  */
@@ -20,7 +22,7 @@ public final class BindingUtils {
         if (url == null) {
             iv.setImageDrawable(placeholder);
         } else {
-            GlideApp.with(iv)
+            Glide.with(iv)
                     .load(url)
                     .fitCenter()
                     .placeholder(placeholder)

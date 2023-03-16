@@ -9,7 +9,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.testsite.reddittop.R;
 import com.testsite.reddittop.data.RedditPost;
 import com.testsite.reddittop.databinding.ActivityTopListBinding;
-import com.testsite.reddittop.utils.CustomTabsInstance;
+import com.testsite.reddittop.utils.ChromeTabsIntent;
 import com.testsite.reddittop.utils.OnPostClickListener;
 import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 import com.testsite.reddittop.utils.exceptions.UnauthorizedException;
@@ -23,10 +23,18 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import saschpe.android.customtabs.CustomTabsHelper;
 import timber.log.Timber;
 
+@AndroidEntryPoint
 public class TopPostsActivity extends AppCompatActivity {
+
+    @Inject
+    CustomTabsHelper customTabsHelper;
 
     private RedditViewModel postsViewModel;
 
@@ -52,10 +60,10 @@ public class TopPostsActivity extends AppCompatActivity {
             public void onStateChanged(LifecycleOwner source, Lifecycle.Event event) {
                 switch (event) {
                     case ON_RESUME:
-                        CustomTabsInstance.getInstance().bindCustomTabsService(TopPostsActivity.this);
+                        customTabsHelper.bindCustomTabsService(TopPostsActivity.this);
                         break;
                     case ON_PAUSE:
-                        CustomTabsInstance.getInstance().unbindCustomTabsService(TopPostsActivity.this);
+                        customTabsHelper.unbindCustomTabsService(TopPostsActivity.this);
                         break;
                 }
             }
@@ -64,7 +72,7 @@ public class TopPostsActivity extends AppCompatActivity {
         postsViewModel.getErrorHandler().observe(this, new Observer<ErrorHandler>() {
             @Override
             public void onChanged(ErrorHandler errorHandler) {
-                if (errorHandler.getException() instanceof UnauthorizedException){
+                if (errorHandler.getException() instanceof UnauthorizedException) {
                     // Try re-authorize
                     Timber.d("%s. Retrying...", errorHandler.getMessage());
                     postsViewModel.authorize();
@@ -92,9 +100,9 @@ public class TopPostsActivity extends AppCompatActivity {
                 adapter.submitList(redditPosts);
             }
         });
-        postsViewModel.getExternalIntent().observe(this, new Observer<CustomTabsInstance.ChromTabsIntent<RedditPost>>() {
+        postsViewModel.getExternalIntent().observe(this, new Observer<ChromeTabsIntent<RedditPost>>() {
             @Override
-            public void onChanged(CustomTabsInstance.ChromTabsIntent<RedditPost> redditPostChromTabsIntent) {
+            public void onChanged(ChromeTabsIntent<RedditPost> redditPostChromTabsIntent) {
                 CustomTabsHelper.Companion.openCustomTab(TopPostsActivity.this, redditPostChromTabsIntent.getIntent(),
                         Uri.parse(redditPostChromTabsIntent.getContent().getLink()),
                         new CustomTabsHelper.CustomTabFallback() {
@@ -109,8 +117,6 @@ public class TopPostsActivity extends AppCompatActivity {
                                 if (viewIntent.resolveActivity(getPackageManager()) != null) {
                                     startActivity(chooser);
                                 }
-                                // TODO: Make sure this will work when Chrome is not installed, but Reddit app IS ->
-                                // TODO: open in Reddit
                             }
                         });
             }

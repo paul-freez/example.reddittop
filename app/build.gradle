@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'org.jetbrains.kotlin.kapt'
+apply plugin: 'com.google.dagger.hilt.android'
 
 android {
     compileSdkVersion 33
@@ -6,8 +9,8 @@ android {
         applicationId "com.testsite.reddittop"
         minSdkVersion 28
         targetSdkVersion 33
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
     }
     buildTypes {
         release {
@@ -20,13 +23,11 @@ android {
         dataBinding true
     }
 
-    namespace 'com.testsite.reddittop'
-}
-
-configurations {
-    all {
-        exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel-ktx'
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
+
+    namespace 'com.testsite.reddittop'
 }
 
 dependencies {
@@ -37,6 +38,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.databinding:databinding-common:7.4.2'
     implementation "androidx.browser:browser:1.5.0"
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0'
 
     implementation("de.peilicke.sascha:android-customtabs:3.0.3")
 
@@ -48,10 +51,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
 
     implementation 'com.github.bumptech.glide:glide:4.15.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
-
-    implementation 'com.jakewharton:butterknife:10.2.3'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    kapt 'com.github.bumptech.glide:compiler:4.15.1'
 
     implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    implementation 'com.google.dagger:hilt-android:2.45'
+    implementation 'com.google.dagger:hilt-android:2.45'
+    kapt 'com.google.dagger:hilt-compiler:2.45'
 }

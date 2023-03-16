@@ -22,6 +22,6 @@ public final class NetworkErrorException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return App.getContext().getString(R.string.error_network);
+        return App.Companion.getAppContext().getString(R.string.error_network);
     }
 }

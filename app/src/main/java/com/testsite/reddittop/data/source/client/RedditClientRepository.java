@@ -11,6 +11,8 @@ import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import kotlin.jvm.functions.Function1;
+
 /**
  * Created by paulf
  */
@@ -39,9 +41,9 @@ public class RedditClientRepository extends BaseRepository<ClientRemoteDataSourc
     public UIListing<OAuthToken> authenticate() {
         getSourceFactory().create().authenticate();
 
-        LiveData<OAuthToken> tokenLiveData = Transformations.switchMap(getSourceFactory().getSourceLiveData(), new Function<ClientRemoteDataSource, LiveData<OAuthToken>>() {
+        LiveData<OAuthToken> tokenLiveData = Transformations.switchMap(getSourceFactory().getSourceLiveData(), new Function1<ClientRemoteDataSource, LiveData<OAuthToken>>() {
             @Override
-            public LiveData<OAuthToken> apply(ClientRemoteDataSource input) {
+            public LiveData<OAuthToken> invoke(ClientRemoteDataSource input) {
                 return input.getToken();
             }
         });

@@ -7,6 +7,8 @@ import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
+import kotlin.jvm.functions.Function1;
+
 
 /**
  * Created by paulf
@@ -36,18 +38,18 @@ public abstract class BaseRepository<D extends BaseReportingDataSource, T extend
     protected abstract T createSourceFactory();
 
     protected LiveData<Boolean> getLoaderHandler() {
-        return Transformations.switchMap(sourceFactory.getSourceLiveData(), new Function<D, LiveData<Boolean>>() {
+        return Transformations.switchMap(sourceFactory.getSourceLiveData(), new Function1<D, LiveData<Boolean>>() {
             @Override
-            public LiveData<Boolean> apply(D input) {
+            public LiveData<Boolean> invoke(D input) {
                 return input.getLoaderHandler();
             }
         });
     }
 
     protected LiveData<ErrorHandler> getMessengerHandler() {
-        return Transformations.switchMap(sourceFactory.getSourceLiveData(), new Function<D, LiveData<ErrorHandler>>() {
+        return Transformations.switchMap(sourceFactory.getSourceLiveData(), new Function1<D, LiveData<ErrorHandler>>() {
             @Override
-            public LiveData<ErrorHandler> apply(D input) {
+            public LiveData<ErrorHandler> invoke(D input) {
                 return input.getErrorMessenger();
             }
         });

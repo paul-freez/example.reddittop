@@ -2,6 +2,7 @@ package com.testsite.reddittop.main;
 
 import com.testsite.reddittop.App;
 import com.testsite.reddittop.R;
+import com.testsite.reddittop.utils.ChromeTabsIntent;
 import com.testsite.reddittop.utils.models.UIListing;
 import com.testsite.reddittop.data.RedditPost;
 import com.testsite.reddittop.data.source.api.RedditApi;
@@ -10,7 +11,6 @@ import com.testsite.reddittop.data.source.client.RedditClientRepository;
 import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
 import com.testsite.reddittop.data.source.post.RedditPostsRepository;
 import com.testsite.reddittop.models.StatusAwareViewModel;
-import com.testsite.reddittop.utils.CustomTabsInstance;
 import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
 import java.util.Arrays;
@@ -26,6 +26,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.paging.PagedList;
 
+import kotlin.jvm.functions.Function1;
+
 /**
  * Created by paulf
  */
@@ -37,23 +39,23 @@ public class RedditViewModel extends StatusAwareViewModel {
     // Main repo results
     private final MediatorLiveData<UIListing<PagedList<RedditPost>>> repoResult = new MediatorLiveData<>();
 
-    private final LiveData<UIListing<OAuthToken>> authResult = Transformations.map(auth, new Function<Long, UIListing<OAuthToken>>() {
+    private final LiveData<UIListing<OAuthToken>> authResult = Transformations.map(auth, new Function1<Long, UIListing<OAuthToken>>() {
         @Override
-        public UIListing<OAuthToken> apply(Long input) {
+        public UIListing<OAuthToken> invoke(Long input) {
             return clientRepository.authenticate();
         }
     });
 
-    private final LiveData<OAuthToken> token = Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<OAuthToken>>() {
+    private final LiveData<OAuthToken> token = Transformations.switchMap(authResult, new Function1<UIListing<OAuthToken>, LiveData<OAuthToken>>() {
         @Override
-        public LiveData<OAuthToken> apply(UIListing<OAuthToken> input) {
+        public LiveData<OAuthToken> invoke(UIListing<OAuthToken> input) {
             return input.getContent();
         }
     });
 
-    private final LiveData<PagedList<RedditPost>> posts = Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<PagedList<RedditPost>>>() {
+    private final LiveData<PagedList<RedditPost>> posts = Transformations.switchMap(repoResult, new Function1<UIListing<PagedList<RedditPost>>, LiveData<PagedList<RedditPost>>>() {
         @Override
-        public LiveData<PagedList<RedditPost>> apply(UIListing<PagedList<RedditPost>> input) {
+        public LiveData<PagedList<RedditPost>> invoke(UIListing<PagedList<RedditPost>> input) {
             return input.getContent();
         }
     });
@@ -61,7 +63,7 @@ public class RedditViewModel extends StatusAwareViewModel {
     private final RedditClientRepository clientRepository;
     private final RedditPostsRepository postsRepository;
 
-    private final MutableLiveData<CustomTabsInstance.ChromTabsIntent<RedditPost>> externalIntent = new MutableLiveData<>();
+    private final MutableLiveData<ChromeTabsIntent<RedditPost>> externalIntent = new MutableLiveData<>();
 
     public RedditViewModel() {
         setupRepoCalls();
@@ -76,16 +78,16 @@ public class RedditViewModel extends StatusAwareViewModel {
     protected List<LiveData<Boolean>> provideLoaders() {
         return Arrays.asList(
                 //Loader for auth
-                Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<Boolean>>() {
+                Transformations.switchMap(authResult, new Function1<UIListing<OAuthToken>, LiveData<Boolean>>() {
                     @Override
-                    public LiveData<Boolean> apply(UIListing<OAuthToken> input) {
+                    public LiveData<Boolean> invoke(UIListing<OAuthToken> input) {
                         return input.getLoadStateHandler();
                     }
                 }),
                 // Loader for posts
-                Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<Boolean>>() {
+                Transformations.switchMap(repoResult, new Function1<UIListing<PagedList<RedditPost>>, LiveData<Boolean>>() {
                     @Override
-                    public LiveData<Boolean> apply(UIListing<PagedList<RedditPost>> input) {
+                    public LiveData<Boolean> invoke(UIListing<PagedList<RedditPost>> input) {
                         return input.getLoadStateHandler();
                     }
                 }));
@@ -95,16 +97,16 @@ public class RedditViewModel extends StatusAwareViewModel {
     protected List<LiveData<ErrorHandler>> provideErrorHandlers() {
         return Arrays.asList(
                 //Loader for auth
-                Transformations.switchMap(authResult, new Function<UIListing<OAuthToken>, LiveData<ErrorHandler>>() {
+                Transformations.switchMap(authResult, new Function1<UIListing<OAuthToken>, LiveData<ErrorHandler>>() {
                     @Override
-                    public LiveData<ErrorHandler> apply(UIListing<OAuthToken> input) {
+                    public LiveData<ErrorHandler> invoke(UIListing<OAuthToken> input) {
                         return input.getErrorHandler();
                     }
                 }),
                 // Loader for posts
-                Transformations.switchMap(repoResult, new Function<UIListing<PagedList<RedditPost>>, LiveData<ErrorHandler>>() {
+                Transformations.switchMap(repoResult, new Function1<UIListing<PagedList<RedditPost>>, LiveData<ErrorHandler>>() {
                     @Override
-                    public LiveData<ErrorHandler> apply(UIListing<PagedList<RedditPost>> input) {
+                    public LiveData<ErrorHandler> invoke(UIListing<PagedList<RedditPost>> input) {
                         return input.getErrorHandler();
                     }
                 }));
@@ -119,18 +121,18 @@ public class RedditViewModel extends StatusAwareViewModel {
         };
 
         // Result from auth
-        LiveData<UIListing<PagedList<RedditPost>>> repoResultInit = Transformations.switchMap(token, new Function<OAuthToken, LiveData<UIListing<PagedList<RedditPost>>>>() {
+        LiveData<UIListing<PagedList<RedditPost>>> repoResultInit = Transformations.switchMap(token, new Function1<OAuthToken, LiveData<UIListing<PagedList<RedditPost>>>>() {
             @Override
-            public LiveData<UIListing<PagedList<RedditPost>>> apply(OAuthToken token) {
+            public LiveData<UIListing<PagedList<RedditPost>>> invoke(OAuthToken token) {
                 LiveData<UIListing<PagedList<RedditPost>>> res = new MutableLiveData<>();
                 ((MutableLiveData<UIListing<PagedList<RedditPost>>>) res).postValue(postsRepository.getTopPosts(5));
                 return res;
             }
         });
         // Result from manual fetching
-        LiveData<UIListing<PagedList<RedditPost>>> repoResultFetch = Transformations.map(fetch, new Function<Long, UIListing<PagedList<RedditPost>>>() {
+        LiveData<UIListing<PagedList<RedditPost>>> repoResultFetch = Transformations.map(fetch, new Function1<Long, UIListing<PagedList<RedditPost>>>() {
             @Override
-            public UIListing<PagedList<RedditPost>> apply(Long input) {
+            public UIListing<PagedList<RedditPost>> invoke(Long input) {
                 return postsRepository.getTopPosts(5);
             }
         });
@@ -160,14 +162,14 @@ public class RedditViewModel extends StatusAwareViewModel {
 
     public void openPost(RedditPost post) {
         CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
-                .setToolbarColor(App.getContext().getResources().getColor(R.color.colorPrimary))
+                .setToolbarColor(App.Companion.getAppContext().getResources().getColor(R.color.colorPrimary))
                 .setShowTitle(true)
                 .build();
 
-        externalIntent.setValue(new CustomTabsInstance.ChromTabsIntent<>(customTabsIntent, post));
+        externalIntent.setValue(new ChromeTabsIntent<>(customTabsIntent, post));
     }
 
-    public LiveData<CustomTabsInstance.ChromTabsIntent<RedditPost>> getExternalIntent() {
+    public LiveData<ChromeTabsIntent<RedditPost>> getExternalIntent() {
         return externalIntent;
     }
 }
