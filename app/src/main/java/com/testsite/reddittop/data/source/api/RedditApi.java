@@ -14,6 +14,7 @@ import retrofit2.http.Query;
 /**
  * Created by paulf
  */
+@Deprecated
 public interface RedditApi {
 
     String CLIENT_ID = "your_client_id";
@@ -36,6 +37,7 @@ public interface RedditApi {
                                                 @Query("after") String lastElement,
                                                 @Query("limit") int size);
 
+    @Deprecated
     enum TimeFilter {
         @SerializedName("all")
         ALL,

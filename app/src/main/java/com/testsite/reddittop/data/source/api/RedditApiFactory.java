@@ -1,5 +1,8 @@
 package com.testsite.reddittop.data.source.api;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.testsite.reddittop.BuildConfig;
@@ -11,8 +14,6 @@ import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 import java.io.IOException;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -25,10 +26,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by paulf
  */
+@Deprecated
 public class RedditApiFactory {
 
     public static RedditApi create(String url, final @NonNull LiveData<OAuthToken> token) {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new ConnectivityInterceptor())
