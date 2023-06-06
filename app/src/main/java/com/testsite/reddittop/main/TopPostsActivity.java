@@ -5,15 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.testsite.reddittop.R;
-import com.testsite.reddittop.data.RedditPost;
-import com.testsite.reddittop.databinding.ActivityTopListBinding;
-import com.testsite.reddittop.utils.ChromeTabsIntent;
-import com.testsite.reddittop.utils.OnPostClickListener;
-import com.testsite.reddittop.utils.connectivity.ErrorHandler;
-import com.testsite.reddittop.utils.exceptions.UnauthorizedException;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.GenericLifecycleObserver;
@@ -23,6 +14,15 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.testsite.reddittop.R;
+import com.testsite.reddittop.utils.ChromeTabsIntent;
+import com.testsite.reddittop.utils.OnPostClickListener;
+import com.testsite.reddittop.databinding.ActivityTopListBinding;
+import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.utils.connectivity.ErrorHandler;
+import com.testsite.reddittop.utils.exceptions.UnauthorizedException;
 
 import javax.inject.Inject;
 

@@ -3,14 +3,14 @@ package com.testsite.reddittop.main;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.testsite.reddittop.data.RedditPost;
-import com.testsite.reddittop.databinding.ItemRedditPostBinding;
-import com.testsite.reddittop.utils.OnPostClickListener;
-
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.testsite.reddittop.utils.OnPostClickListener;
+import com.testsite.reddittop.databinding.ItemRedditPostBinding;
+import com.testsite.reddittop.data.RedditPost;
 
 /**
  * Created by paulf
@@ -27,7 +27,7 @@ public class TopPostsAdapter extends PagedListAdapter<RedditPost, TopPostsAdapte
 
         @Override
         public boolean areContentsTheSame(@NonNull RedditPost oldItem, @NonNull RedditPost newItem) {
-            return oldItem == newItem;
+            return oldItem.equals(newItem);
         }
     };
 

@@ -1,23 +1,5 @@
 package com.testsite.reddittop.main;
 
-import com.testsite.reddittop.App;
-import com.testsite.reddittop.R;
-import com.testsite.reddittop.utils.ChromeTabsIntent;
-import com.testsite.reddittop.utils.models.UIListing;
-import com.testsite.reddittop.data.RedditPost;
-import com.testsite.reddittop.data.source.api.RedditApi;
-import com.testsite.reddittop.data.source.api.RedditApiFactory;
-import com.testsite.reddittop.data.source.client.RedditClientRepository;
-import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
-import com.testsite.reddittop.data.source.post.RedditPostsRepository;
-import com.testsite.reddittop.models.StatusAwareViewModel;
-import com.testsite.reddittop.utils.connectivity.ErrorHandler;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Executors;
-
-import androidx.arch.core.util.Function;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -25,6 +7,23 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.paging.PagedList;
+
+import com.testsite.reddittop.App;
+import com.testsite.reddittop.R;
+import com.testsite.reddittop.utils.ChromeTabsIntent;
+import com.testsite.reddittop.data.source.api.RedditApi;
+import com.testsite.reddittop.data.source.api.RedditApiFactory;
+import com.testsite.reddittop.data.source.client.RedditClientRepository;
+import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
+import com.testsite.reddittop.data.source.post.RedditPostsRepository;
+import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.models.StatusAwareViewModel;
+import com.testsite.reddittop.utils.connectivity.ErrorHandler;
+import com.testsite.reddittop.utils.models.UIListing;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Executors;
 
 import kotlin.jvm.functions.Function1;
 

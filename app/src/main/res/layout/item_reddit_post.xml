@@ -36,7 +36,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:placeholder="@{@drawable/ic_noimage}"
-                app:url="@{post.thumbnail}"
+                app:url="@{post.imageUrl}"
                 tools:src="@drawable/ic_noimage"/>
 
             <TextView
@@ -141,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:text="@{post.commentsCount}"
+                android:text="@{post.comments}"
                 android:textColor="@color/textcolor_secondary"
                 android:textSize="@dimen/textsize_secondary"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_post_comments"
