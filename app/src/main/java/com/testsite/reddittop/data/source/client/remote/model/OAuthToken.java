@@ -1,16 +1,17 @@
 package com.testsite.reddittop.data.source.client.remote.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.NonNull;
-
 /**
  * Created by paulf
  */
+@Deprecated
 @SuppressWarnings("unused")
 public class OAuthToken {
 

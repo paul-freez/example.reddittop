@@ -1,11 +1,11 @@
 package com.testsite.reddittop.data.source.client.remote;
 
-import com.testsite.reddittop.data.source.ReportingDataSourceFactory;
-import com.testsite.reddittop.data.source.api.RedditApi;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.testsite.reddittop.data.source.ReportingDataSourceFactory;
+import com.testsite.reddittop.data.source.api.RedditApi;
 
 /**
  * Created by paulf
@@ -13,6 +13,7 @@ import androidx.lifecycle.MutableLiveData;
  *  * A simple data source factory which also provides a way to observe the last created data source.
  *  * This allows us to channel its network request status etc back to the UI.
  */
+@Deprecated
 public class ClientRemoteDataSourceFactory implements ReportingDataSourceFactory<ClientRemoteDataSource> {
 
     private final RedditApi api;

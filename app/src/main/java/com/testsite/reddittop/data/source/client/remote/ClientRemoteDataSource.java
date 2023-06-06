@@ -1,5 +1,8 @@
 package com.testsite.reddittop.data.source.client.remote;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.client.ClientDataSource;
 import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
@@ -7,14 +10,13 @@ import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
 import java.util.UUID;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import retrofit2.Call;
 import retrofit2.Callback;
 
 /**
  * Created by paulf
  */
+@Deprecated
 public class ClientRemoteDataSource implements ClientDataSource {
 
     private final RedditApi api;

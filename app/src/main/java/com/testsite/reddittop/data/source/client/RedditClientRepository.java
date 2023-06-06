@@ -1,21 +1,21 @@
 package com.testsite.reddittop.data.source.client;
 
-import com.testsite.reddittop.utils.models.UIListing;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
+
 import com.testsite.reddittop.data.source.BaseRepository;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.client.remote.ClientRemoteDataSource;
 import com.testsite.reddittop.data.source.client.remote.ClientRemoteDataSourceFactory;
 import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
-
-import androidx.arch.core.util.Function;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
+import com.testsite.reddittop.utils.models.UIListing;
 
 import kotlin.jvm.functions.Function1;
 
 /**
  * Created by paulf
  */
+@Deprecated
 public class RedditClientRepository extends BaseRepository<ClientRemoteDataSource, ClientRemoteDataSourceFactory> implements ClientRepository {
 
     private static RedditClientRepository INSTANCE;
