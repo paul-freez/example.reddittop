@@ -1,9 +1,13 @@
 package com.testsite.reddittop.di
 
+import com.testsite.reddittop.api.RedditApi
 import com.testsite.reddittop.api.RedditAuthApi
 import com.testsite.reddittop.data.source.ClientDataSource
+import com.testsite.reddittop.data.source.ClientRepository
+import com.testsite.reddittop.data.source.FeedRepository
 import com.testsite.reddittop.data.source.local.ClientLocalDataSource
 import com.testsite.reddittop.data.source.remote.ClientRemoteDataSource
+import com.testsite.reddittop.data.source.remote.FeedRemoteDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,12 +22,29 @@ class DataModule {
     @Provides
     @Singleton
     @Remote
-    fun provideClientRemoteDataSource(api : RedditAuthApi) : ClientDataSource = ClientRemoteDataSource(api)
+    fun provideClientRemoteDataSource(api: RedditAuthApi): ClientDataSource =
+        ClientRemoteDataSource(api)
 
     @Provides
     @Singleton
     @Local
-    fun provideClientLocalDataSource() : ClientDataSource = ClientLocalDataSource()
+    fun provideClientLocalDataSource(): ClientDataSource = ClientLocalDataSource()
+
+    @Provides
+    @Singleton
+    fun provideClientRepo(
+        @Remote remote: ClientDataSource,
+        @Local local: ClientDataSource
+    ): ClientRepository = ClientRepository(remote, local)
+
+    @Provides
+    @Singleton
+    fun provideFeedRemoteDataSource(api: RedditApi): FeedRemoteDataSource =
+        FeedRemoteDataSource(api)
+
+    @Provides
+    @Singleton
+    fun provideFeedRepo(remote : FeedRemoteDataSource) : FeedRepository = FeedRepository(remote)
 
     @Qualifier
     @Retention(AnnotationRetention.BINARY)

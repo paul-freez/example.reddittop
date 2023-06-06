@@ -1,13 +1,13 @@
 package com.testsite.reddittop.data.source.post.remote;
 
-import com.testsite.reddittop.data.RedditPost;
-import com.testsite.reddittop.data.source.ReportingDataSourceFactory;
-import com.testsite.reddittop.data.source.api.RedditApi;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
+
+import com.testsite.reddittop.data.source.ReportingDataSourceFactory;
+import com.testsite.reddittop.data.source.api.RedditApi;
+import com.testsite.reddittop.data.RedditPost;
 
 /**
  * Created by paulf
@@ -15,6 +15,7 @@ import androidx.paging.DataSource;
  * A simple data source factory which also provides a way to observe the last created data source.
  * This allows us to channel its network request status etc back to the UI.
  */
+@Deprecated
 public class PostsRemoteDataSourceFactory extends DataSource.Factory<String, RedditPost>
         implements ReportingDataSourceFactory<PageKeyedPostsRemoteDataSource> {
 

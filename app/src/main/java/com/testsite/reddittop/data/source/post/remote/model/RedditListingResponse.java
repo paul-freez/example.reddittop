@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by paulf
  */
+@Deprecated
 public class RedditListingResponse {
 
     @SerializedName("data")

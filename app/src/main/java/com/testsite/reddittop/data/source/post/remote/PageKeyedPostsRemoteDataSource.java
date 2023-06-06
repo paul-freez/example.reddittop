@@ -1,18 +1,19 @@
 package com.testsite.reddittop.data.source.post.remote;
 
-import com.testsite.reddittop.data.RedditPost;
-import com.testsite.reddittop.data.source.BaseReportingDataSource;
-import com.testsite.reddittop.data.source.api.RedditApi;
-import com.testsite.reddittop.data.source.post.remote.model.RedditListingResponse;
-import com.testsite.reddittop.utils.connectivity.ErrorHandler;
-
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PageKeyedDataSource;
+
+import com.testsite.reddittop.data.source.BaseReportingDataSource;
+import com.testsite.reddittop.data.source.api.RedditApi;
+import com.testsite.reddittop.data.source.post.remote.model.RedditListingResponse;
+import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.utils.connectivity.ErrorHandler;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,6 +21,7 @@ import retrofit2.Response;
 /**
  * Created by paulf
  */
+@Deprecated
 public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, RedditPost> implements BaseReportingDataSource {
 
     private final int MAX = 50;
