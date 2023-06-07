@@ -5,6 +5,7 @@ import com.testsite.reddittop.BuildConfig
 import com.testsite.reddittop.api.RedditApi
 import com.testsite.reddittop.api.RedditAuthApi
 import com.testsite.reddittop.data.CredentialsContainer
+import com.testsite.reddittop.data.TokenManager
 import com.testsite.reddittop.utils.connectivity.ConnectivityInterceptor
 import dagger.Module
 import dagger.Provides
@@ -55,13 +56,8 @@ class NetworkingModule {
     fun provideRedditAuthUrl(): String = RedditAuthApi.OAUTH_URL
 
     @Provides
-    @NonAuth
     @Singleton
-    fun provideCredentials(): CredentialsContainer = CredentialsContainer()
-
-    @Provides
-    @Auth
-    fun provideToken(): CredentialsContainer = CredentialsContainer(TODO("Provide token"))
+    fun provideCredentials(tokenManager: TokenManager): CredentialsContainer = CredentialsContainer(tokenManager)
 
     @Provides
     @Auth
@@ -70,13 +66,6 @@ class NetworkingModule {
         provideHeaderInterceptor("Authorization", token.get())
 
     @Provides
-    @NonAuth
-    @Singleton
-    fun provideAuthCredentialsInterceptor(@NonAuth credentials: CredentialsContainer): Interceptor =
-        provideHeaderInterceptor("Authorization", credentials.get())
-
-    @Provides
-    @Auth
     @Singleton
     fun provideAuthOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
@@ -91,26 +80,11 @@ class NetworkingModule {
         .build()
 
     @Provides
-    @NonAuth
-    @Singleton
-    fun provideOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor,
-        connectivityInterceptor: ConnectivityInterceptor,
-        @UserAgentInterceptor userAgentInterceptor: Interceptor,
-        @NonAuth authInterceptor: Interceptor,
-    ): OkHttpClient = OkHttpClient().newBuilder()
-        .addInterceptor(loggingInterceptor)
-        .addInterceptor(connectivityInterceptor)
-        .addInterceptor(userAgentInterceptor)
-        .addInterceptor(authInterceptor)
-        .build()
-
-    @Provides
     @Singleton
     @Auth
     fun provideAuthRetrofit(
         @Auth url: String,
-        @Auth okHttpClient: OkHttpClient,
+        okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit = Retrofit.Builder()
         .baseUrl(url)
@@ -127,7 +101,7 @@ class NetworkingModule {
     @NonAuth
     fun provideRetrofit(
         @NonAuth url: String,
-        @NonAuth okHttpClient: OkHttpClient,
+        okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory
     ): Retrofit = Retrofit.Builder()
         .baseUrl(url)

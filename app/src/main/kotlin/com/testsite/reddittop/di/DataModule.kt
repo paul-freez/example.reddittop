@@ -2,6 +2,7 @@ package com.testsite.reddittop.di
 
 import com.testsite.reddittop.api.RedditApi
 import com.testsite.reddittop.api.RedditAuthApi
+import com.testsite.reddittop.data.TokenManager
 import com.testsite.reddittop.data.source.ClientDataSource
 import com.testsite.reddittop.data.source.ClientRepository
 import com.testsite.reddittop.data.source.FeedRepository
@@ -28,7 +29,7 @@ class DataModule {
     @Provides
     @Singleton
     @Local
-    fun provideClientLocalDataSource(): ClientDataSource = ClientLocalDataSource()
+    fun provideClientLocalDataSource(tokenManager: TokenManager): ClientDataSource = ClientLocalDataSource(tokenManager)
 
     @Provides
     @Singleton

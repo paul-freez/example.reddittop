@@ -7,6 +7,9 @@ import java.util.UUID
 
 class ClientRemoteDataSource constructor(private val api: RedditAuthApi) :
     ClientDataSource {
-    override suspend fun authenticate(): OAuthToken =
+    override suspend fun retrieveToken(): OAuthToken =
         api.getOAuthToken(deviceId = UUID.randomUUID().toString())
+
+    override suspend fun preserveToken(token: OAuthToken) {
+    }
 }

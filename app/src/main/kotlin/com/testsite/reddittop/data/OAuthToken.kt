@@ -6,15 +6,15 @@ import java.util.concurrent.TimeUnit
 
 data class OAuthToken(
     @SerializedName("access_token") @Expose
-    private val token: String,
+    val token: String,
     @SerializedName("expires_in") @Expose
-    private val expiresIn: Long,
+    val expiresIn: Long,
     @SerializedName("token_type") @Expose
-    private val type: String
+    val type: String,
+    val creationTime: Long = System.currentTimeMillis()
 ) {
 
     // Response time and creation time shouldn't be much different
-    private val creationTime: Long = System.currentTimeMillis()
     private val expirationTime: Long = creationTime + TimeUnit.SECONDS.toMillis(expiresIn)
 
     val fullToken: String
@@ -25,9 +25,5 @@ data class OAuthToken(
 
     override fun toString(): String {
         return "$fullToken expires in ${TimeUnit.SECONDS.toMinutes(expiresIn)}"
-    }
-
-    companion object {
-        val NONE = OAuthToken("none", -1, "none")
     }
 }

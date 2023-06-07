@@ -12,14 +12,15 @@ class ClientRepository @Inject constructor(
 ) {
 
     fun authenticate(): Flow<OAuthToken> = flow {
-        val token = localDataSource.authenticate()
-        // TODO: Provide better caching
+        val token = localDataSource.retrieveToken()
         emit(
             if (token.isExpired) {
-                remoteSource.authenticate()
+                retrieveNewToken()
             } else {
                 token
             }
         )
     }
+
+    private suspend fun retrieveNewToken() : OAuthToken = remoteSource.retrieveToken().also { token -> localDataSource.preserveToken(token) }
 }
