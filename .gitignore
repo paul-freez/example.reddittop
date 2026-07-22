@@ -64,3 +64,6 @@ replacements.txt
 
 #git
 *.git/
+/.artifacts/53eda368-84d9-4c0b-8304-fd32e6024866/implementation_plan.artifact.md
+/.artifacts/53eda368-84d9-4c0b-8304-fd32e6024866/walkthrough.artifact.md
+/.artifacts/53eda368-84d9-4c0b-8304-fd32e6024866/task.artifact.md

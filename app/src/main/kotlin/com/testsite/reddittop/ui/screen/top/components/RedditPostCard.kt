@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
-package com.testsite.reddittop.ui
+package com.testsite.reddittop.ui.screen.top.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,14 +38,14 @@ import com.testsite.reddittop.utils.RedditPostPreview
 
 @Preview("Post preview")
 @Composable
-fun PreviewRedditPostCard(
+private fun PreviewRedditPostCard(
     @PreviewParameter(RedditPostPreview::class) post: RedditPostUI
 ) {
     RedditPostCard(post = post, onPostClicked = {})
 }
 
 @Composable
-private fun RedditPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
+fun RedditPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
     Card(
         modifier = Modifier
             .height(150.dp)

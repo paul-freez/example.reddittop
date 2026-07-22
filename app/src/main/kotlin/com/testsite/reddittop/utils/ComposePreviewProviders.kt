@@ -2,7 +2,7 @@ package com.testsite.reddittop.utils
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.testsite.reddittop.domain.model.DummyRedditPost
-import com.testsite.reddittop.ui.UIMapper.toUI
+import com.testsite.reddittop.ui.UiMapper.toUI
 import com.testsite.reddittop.ui.model.RedditPostUI
 import java.time.LocalDateTime
 import java.time.ZoneOffset

@@ -7,7 +7,7 @@ import com.testsite.reddittop.utils.roundToK
 import com.testsite.reddittop.utils.timeAgo
 import java.util.concurrent.TimeUnit
 
-object UIMapper {
+object UiMapper {
     fun RedditPost.toUI(): RedditPostUI = RedditPostUI(
         title = title,
         author = "u/$authorName",
