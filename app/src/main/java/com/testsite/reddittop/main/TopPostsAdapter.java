@@ -10,23 +10,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.testsite.reddittop.utils.OnPostClickListener;
 import com.testsite.reddittop.databinding.ItemRedditPostBinding;
-import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.data.model.RedditPostDTO;
 
 /**
  * Created by paulf
  */
-public class TopPostsAdapter extends PagedListAdapter<RedditPost, TopPostsAdapter.PostViewHolder> {
+public class TopPostsAdapter extends PagedListAdapter<RedditPostDTO, TopPostsAdapter.PostViewHolder> {
 
     private OnPostClickListener listener;
 
-    private static final DiffUtil.ItemCallback<RedditPost> DIFF_CALLBACK = new DiffUtil.ItemCallback<RedditPost>() {
+    private static final DiffUtil.ItemCallback<RedditPostDTO> DIFF_CALLBACK = new DiffUtil.ItemCallback<RedditPostDTO>() {
         @Override
-        public boolean areItemsTheSame(@NonNull RedditPost oldItem, @NonNull RedditPost newItem) {
+        public boolean areItemsTheSame(@NonNull RedditPostDTO oldItem, @NonNull RedditPostDTO newItem) {
             return oldItem.getTitle().equals(newItem.getTitle());
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull RedditPost oldItem, @NonNull RedditPost newItem) {
+        public boolean areContentsTheSame(@NonNull RedditPostDTO oldItem, @NonNull RedditPostDTO newItem) {
             return oldItem.equals(newItem);
         }
     };

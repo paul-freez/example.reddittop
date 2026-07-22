@@ -9,7 +9,7 @@ import androidx.paging.PageKeyedDataSource;
 import com.testsite.reddittop.data.source.BaseReportingDataSource;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.post.remote.model.RedditListingResponse;
-import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.data.model.RedditPostDTO;
 import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import retrofit2.Response;
  * Created by paulf
  */
 @Deprecated
-public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, RedditPost> implements BaseReportingDataSource {
+public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, RedditPostDTO> implements BaseReportingDataSource {
 
     private final int MAX = 50;
 
@@ -38,16 +38,16 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
     }
 
     @Override
-    public void loadInitial(@NonNull LoadInitialParams<String> params, @NonNull final LoadInitialCallback<String, RedditPost> callback) {
+    public void loadInitial(@NonNull LoadInitialParams<String> params, @NonNull final LoadInitialCallback<String, RedditPostDTO> callback) {
         loadPosts(new LoadParamsAdapter<>(params), callback);
     }
 
     @Override
-    public void loadBefore(@NonNull LoadParams<String> params, @NonNull final LoadCallback<String, RedditPost> callback) {
+    public void loadBefore(@NonNull LoadParams<String> params, @NonNull final LoadCallback<String, RedditPostDTO> callback) {
     }
 
     @Override
-    public void loadAfter(@NonNull LoadParams<String> params, @NonNull final LoadCallback<String, RedditPost> callback) {
+    public void loadAfter(@NonNull LoadParams<String> params, @NonNull final LoadCallback<String, RedditPostDTO> callback) {
         loadPosts(params, new LoadCallbackAdapter<>(callback));
     }
 
@@ -61,7 +61,7 @@ public class PageKeyedPostsRemoteDataSource extends PageKeyedDataSource<String, 
         return loadingState;
     }
 
-    private void loadPosts(@NonNull LoadParams<String> params, final LoadInitialCallback<String, RedditPost> callback) {
+    private void loadPosts(@NonNull LoadParams<String> params, final LoadInitialCallback<String, RedditPostDTO> callback) {
         loadingState.postValue(true);
 
         api.getNextTopPosts(RedditApi.TimeFilter.DAY, params.key, Math.min(params.requestedLoadSize, MAX - fetchedItemsCount))

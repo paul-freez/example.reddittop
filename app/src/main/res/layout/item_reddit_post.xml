@@ -5,7 +5,7 @@
 
         <variable
             name="post"
-            type="com.testsite.reddittop.data.RedditPost"/>
+            type="com.testsite.reddittop.data.model.RedditPostDTO"/>
 
         <variable
             name="listener"
@@ -141,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
-                android:text="@{post.comments}"
+                android:text="@{post.commentsDisplay}"
                 android:textColor="@color/textcolor_secondary"
                 android:textSize="@dimen/textsize_secondary"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_post_comments"

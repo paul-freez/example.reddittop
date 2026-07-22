@@ -2,6 +2,7 @@ package com.testsite.reddittop.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.testsite.reddittop.data.model.RedditPostDTO
 
 data class RedditListingResponse(@SerializedName("data") @Expose val data: ResponseData)
 
@@ -11,4 +12,4 @@ data class ResponseData(
     @SerializedName("children") @Expose val content: List<DataBody>
 )
 
-data class DataBody(@SerializedName("data") @Expose val post: RedditPost)
+data class DataBody(@SerializedName("data") @Expose val post: RedditPostDTO)

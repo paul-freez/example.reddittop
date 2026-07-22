@@ -2,7 +2,7 @@ package com.testsite.reddittop.data.source.post.remote.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.data.model.RedditPostDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ public class RedditListingResponse {
         static class DataBody {
             @SerializedName("data")
             @Expose
-            private RedditPost post;
+            private RedditPostDTO post;
 
-            RedditPost getPost() {
+            RedditPostDTO getPost() {
                 return post;
             }
         }
@@ -47,8 +47,8 @@ public class RedditListingResponse {
             return beforeKey;
         }
 
-        public List<RedditPost> getContent() {
-            List<RedditPost> posts = new ArrayList<>();
+        public List<RedditPostDTO> getContent() {
+            List<RedditPostDTO> posts = new ArrayList<>();
             if (content != null) {
                 for (DataBody dataBody : content) {
                     posts.add(dataBody.getPost());

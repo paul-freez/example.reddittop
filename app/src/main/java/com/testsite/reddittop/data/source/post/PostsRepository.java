@@ -2,7 +2,7 @@ package com.testsite.reddittop.data.source.post;
 
 import androidx.paging.PagedList;
 
-import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.data.model.RedditPostDTO;
 import com.testsite.reddittop.utils.models.UIListing;
 
 /**
@@ -10,5 +10,5 @@ import com.testsite.reddittop.utils.models.UIListing;
  */
 @Deprecated
 interface PostsRepository {
-    UIListing<PagedList<RedditPost>> getTopPosts(int size);
+    UIListing<PagedList<RedditPostDTO>> getTopPosts(int size);
 }

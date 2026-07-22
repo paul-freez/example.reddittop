@@ -3,7 +3,7 @@ package com.testsite.reddittop.data.source.remote
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.testsite.reddittop.api.RedditApi
-import com.testsite.reddittop.data.RedditPost
+import com.testsite.reddittop.data.model.RedditPostDTO
 import com.testsite.reddittop.data.TimeFilter
 import timber.log.Timber
 import javax.inject.Inject
@@ -12,8 +12,8 @@ class FeedRemoteDataSource @Inject constructor(
     private val api: RedditApi,
     var feedTimeSort: TimeFilter = TimeFilter.DAY
 ) :
-    PagingSource<String, RedditPost>() {
-    override fun getRefreshKey(state: PagingState<String, RedditPost>): String? {
+    PagingSource<String, RedditPostDTO>() {
+    override fun getRefreshKey(state: PagingState<String, RedditPostDTO>): String? {
         // TODO: Look into responses and prev/next keys. Maybe we can update this thing to add proper +- positions
         return state.anchorPosition?.let { anchor ->
             state.closestPageToPosition(anchor)?.prevKey
@@ -21,7 +21,7 @@ class FeedRemoteDataSource @Inject constructor(
         }
     }
 
-    override suspend fun load(params: LoadParams<String>): PagingSource.LoadResult<String, RedditPost> {
+    override suspend fun load(params: LoadParams<String>): PagingSource.LoadResult<String, RedditPostDTO> {
         val index = params.key ?: ""
         try {
             val response = api.getTopPosts(feedTimeSort, index, params.loadSize)

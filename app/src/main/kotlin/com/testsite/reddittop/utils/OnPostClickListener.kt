@@ -1,7 +1,7 @@
 package com.testsite.reddittop.utils
 
-import com.testsite.reddittop.data.RedditPost
+import com.testsite.reddittop.data.model.RedditPostDTO
 
 fun interface OnPostClickListener {
-    fun onPostClicked(post: RedditPost)
+    fun onPostClicked(post: RedditPostDTO)
 }

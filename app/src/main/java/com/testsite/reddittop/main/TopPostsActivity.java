@@ -5,22 +5,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.GenericLifecycleObserver;
-import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.paging.PagedList;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.testsite.reddittop.R;
+import com.testsite.reddittop.data.model.RedditPostDTO;
+import com.testsite.reddittop.databinding.ActivityTopListBinding;
 import com.testsite.reddittop.utils.ChromeTabsIntent;
 import com.testsite.reddittop.utils.OnPostClickListener;
-import com.testsite.reddittop.databinding.ActivityTopListBinding;
-import com.testsite.reddittop.data.RedditPost;
 import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 import com.testsite.reddittop.utils.exceptions.UnauthorizedException;
 
@@ -47,7 +47,7 @@ public class TopPostsActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        postsViewModel = ViewModelProviders.of(this).get(RedditViewModel.class);
+        postsViewModel = new ViewModelProvider(this).get(RedditViewModel.class);
 
         binding.setLifecycleOwner(this);
         binding.setViewmodel(postsViewModel);
@@ -55,17 +55,15 @@ public class TopPostsActivity extends AppCompatActivity {
         setupList();
 
         // Register for Chrome Tabs warmup
-        getLifecycle().addObserver(new GenericLifecycleObserver() {
+        getLifecycle().addObserver(new DefaultLifecycleObserver() {
             @Override
-            public void onStateChanged(LifecycleOwner source, Lifecycle.Event event) {
-                switch (event) {
-                    case ON_RESUME:
-                        customTabsHelper.bindCustomTabsService(TopPostsActivity.this);
-                        break;
-                    case ON_PAUSE:
-                        customTabsHelper.unbindCustomTabsService(TopPostsActivity.this);
-                        break;
-                }
+            public void onResume(@NonNull LifecycleOwner owner) {
+                customTabsHelper.bindCustomTabsService(TopPostsActivity.this);
+            }
+
+            @Override
+            public void onPause(@NonNull LifecycleOwner owner) {
+                customTabsHelper.unbindCustomTabsService(TopPostsActivity.this);
             }
         });
 
@@ -88,21 +86,21 @@ public class TopPostsActivity extends AppCompatActivity {
         final TopPostsAdapter adapter = new TopPostsAdapter();
         adapter.setOnItemClickListener(new OnPostClickListener() {
             @Override
-            public void onPostClicked(RedditPost post) {
+            public void onPostClicked(RedditPostDTO post) {
                 postsViewModel.openPost(post);
             }
         });
         binding.setAdapter(adapter);
 
-        postsViewModel.getPosts().observe(this, new Observer<PagedList<RedditPost>>() {
+        postsViewModel.getPosts().observe(this, new Observer<PagedList<RedditPostDTO>>() {
             @Override
-            public void onChanged(PagedList<RedditPost> redditPosts) {
-                adapter.submitList(redditPosts);
+            public void onChanged(PagedList<RedditPostDTO> redditPostDTOS) {
+                adapter.submitList(redditPostDTOS);
             }
         });
-        postsViewModel.getExternalIntent().observe(this, new Observer<ChromeTabsIntent<RedditPost>>() {
+        postsViewModel.getExternalIntent().observe(this, new Observer<ChromeTabsIntent<RedditPostDTO>>() {
             @Override
-            public void onChanged(ChromeTabsIntent<RedditPost> redditPostChromTabsIntent) {
+            public void onChanged(ChromeTabsIntent<RedditPostDTO> redditPostChromTabsIntent) {
                 CustomTabsHelper.Companion.openCustomTab(TopPostsActivity.this, redditPostChromTabsIntent.getIntent(),
                         Uri.parse(redditPostChromTabsIntent.getContent().getLink()),
                         new CustomTabsHelper.CustomTabFallback() {

@@ -16,7 +16,7 @@ import com.testsite.reddittop.data.source.api.RedditApiFactory;
 import com.testsite.reddittop.data.source.client.RedditClientRepository;
 import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
 import com.testsite.reddittop.data.source.post.RedditPostsRepository;
-import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.data.model.RedditPostDTO;
 import com.testsite.reddittop.models.StatusAwareViewModel;
 import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 import com.testsite.reddittop.utils.models.UIListing;
@@ -36,7 +36,7 @@ public class RedditViewModel extends StatusAwareViewModel {
     private final MutableLiveData<Long> fetch = new MutableLiveData<>();  // Trigger to start fetching
 
     // Main repo results
-    private final MediatorLiveData<UIListing<PagedList<RedditPost>>> repoResult = new MediatorLiveData<>();
+    private final MediatorLiveData<UIListing<PagedList<RedditPostDTO>>> repoResult = new MediatorLiveData<>();
 
     private final LiveData<UIListing<OAuthToken>> authResult = Transformations.map(auth, new Function1<Long, UIListing<OAuthToken>>() {
         @Override
@@ -52,9 +52,9 @@ public class RedditViewModel extends StatusAwareViewModel {
         }
     });
 
-    private final LiveData<PagedList<RedditPost>> posts = Transformations.switchMap(repoResult, new Function1<UIListing<PagedList<RedditPost>>, LiveData<PagedList<RedditPost>>>() {
+    private final LiveData<PagedList<RedditPostDTO>> posts = Transformations.switchMap(repoResult, new Function1<UIListing<PagedList<RedditPostDTO>>, LiveData<PagedList<RedditPostDTO>>>() {
         @Override
-        public LiveData<PagedList<RedditPost>> invoke(UIListing<PagedList<RedditPost>> input) {
+        public LiveData<PagedList<RedditPostDTO>> invoke(UIListing<PagedList<RedditPostDTO>> input) {
             return input.getContent();
         }
     });
@@ -62,7 +62,7 @@ public class RedditViewModel extends StatusAwareViewModel {
     private final RedditClientRepository clientRepository;
     private final RedditPostsRepository postsRepository;
 
-    private final MutableLiveData<ChromeTabsIntent<RedditPost>> externalIntent = new MutableLiveData<>();
+    private final MutableLiveData<ChromeTabsIntent<RedditPostDTO>> externalIntent = new MutableLiveData<>();
 
     public RedditViewModel() {
         setupRepoCalls();
@@ -84,9 +84,9 @@ public class RedditViewModel extends StatusAwareViewModel {
                     }
                 }),
                 // Loader for posts
-                Transformations.switchMap(repoResult, new Function1<UIListing<PagedList<RedditPost>>, LiveData<Boolean>>() {
+                Transformations.switchMap(repoResult, new Function1<UIListing<PagedList<RedditPostDTO>>, LiveData<Boolean>>() {
                     @Override
-                    public LiveData<Boolean> invoke(UIListing<PagedList<RedditPost>> input) {
+                    public LiveData<Boolean> invoke(UIListing<PagedList<RedditPostDTO>> input) {
                         return input.getLoadStateHandler();
                     }
                 }));
@@ -103,35 +103,35 @@ public class RedditViewModel extends StatusAwareViewModel {
                     }
                 }),
                 // Loader for posts
-                Transformations.switchMap(repoResult, new Function1<UIListing<PagedList<RedditPost>>, LiveData<ErrorHandler>>() {
+                Transformations.switchMap(repoResult, new Function1<UIListing<PagedList<RedditPostDTO>>, LiveData<ErrorHandler>>() {
                     @Override
-                    public LiveData<ErrorHandler> invoke(UIListing<PagedList<RedditPost>> input) {
+                    public LiveData<ErrorHandler> invoke(UIListing<PagedList<RedditPostDTO>> input) {
                         return input.getErrorHandler();
                     }
                 }));
     }
 
     private void setupRepoCalls() {
-        Observer<UIListing<PagedList<RedditPost>>> simpleRepoObserver = new Observer<UIListing<PagedList<RedditPost>>>() {
+        Observer<UIListing<PagedList<RedditPostDTO>>> simpleRepoObserver = new Observer<UIListing<PagedList<RedditPostDTO>>>() {
             @Override
-            public void onChanged(UIListing<PagedList<RedditPost>> pagedListUIListing) {
+            public void onChanged(UIListing<PagedList<RedditPostDTO>> pagedListUIListing) {
                 repoResult.setValue(pagedListUIListing);
             }
         };
 
         // Result from auth
-        LiveData<UIListing<PagedList<RedditPost>>> repoResultInit = Transformations.switchMap(token, new Function1<OAuthToken, LiveData<UIListing<PagedList<RedditPost>>>>() {
+        LiveData<UIListing<PagedList<RedditPostDTO>>> repoResultInit = Transformations.switchMap(token, new Function1<OAuthToken, LiveData<UIListing<PagedList<RedditPostDTO>>>>() {
             @Override
-            public LiveData<UIListing<PagedList<RedditPost>>> invoke(OAuthToken token) {
-                LiveData<UIListing<PagedList<RedditPost>>> res = new MutableLiveData<>();
-                ((MutableLiveData<UIListing<PagedList<RedditPost>>>) res).postValue(postsRepository.getTopPosts(5));
+            public LiveData<UIListing<PagedList<RedditPostDTO>>> invoke(OAuthToken token) {
+                LiveData<UIListing<PagedList<RedditPostDTO>>> res = new MutableLiveData<>();
+                ((MutableLiveData<UIListing<PagedList<RedditPostDTO>>>) res).postValue(postsRepository.getTopPosts(5));
                 return res;
             }
         });
         // Result from manual fetching
-        LiveData<UIListing<PagedList<RedditPost>>> repoResultFetch = Transformations.map(fetch, new Function1<Long, UIListing<PagedList<RedditPost>>>() {
+        LiveData<UIListing<PagedList<RedditPostDTO>>> repoResultFetch = Transformations.map(fetch, new Function1<Long, UIListing<PagedList<RedditPostDTO>>>() {
             @Override
-            public UIListing<PagedList<RedditPost>> invoke(Long input) {
+            public UIListing<PagedList<RedditPostDTO>> invoke(Long input) {
                 return postsRepository.getTopPosts(5);
             }
         });
@@ -155,11 +155,11 @@ public class RedditViewModel extends StatusAwareViewModel {
         fetch.setValue(System.currentTimeMillis());
     }
 
-    public LiveData<PagedList<RedditPost>> getPosts() {
+    public LiveData<PagedList<RedditPostDTO>> getPosts() {
         return posts;
     }
 
-    public void openPost(RedditPost post) {
+    public void openPost(RedditPostDTO post) {
         CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
                 .setToolbarColor(App.Companion.getAppContext().getResources().getColor(R.color.colorPrimary))
                 .setShowTitle(true)
@@ -168,7 +168,7 @@ public class RedditViewModel extends StatusAwareViewModel {
         externalIntent.setValue(new ChromeTabsIntent<>(customTabsIntent, post));
     }
 
-    public LiveData<ChromeTabsIntent<RedditPost>> getExternalIntent() {
+    public LiveData<ChromeTabsIntent<RedditPostDTO>> getExternalIntent() {
         return externalIntent;
     }
 }

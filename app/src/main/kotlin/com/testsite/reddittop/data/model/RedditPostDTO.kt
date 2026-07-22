@@ -1,24 +1,24 @@
-package com.testsite.reddittop.data
+package com.testsite.reddittop.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.testsite.reddittop.api.RedditApi
 import com.testsite.reddittop.utils.roundToK
 import com.testsite.reddittop.utils.timeAgo
-import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by paulf
  */
-data class RedditPost(
+data class RedditPostDTO(
     @SerializedName("title") @Expose val title: String,
-    @SerializedName("author") @Expose private val authorName: String,
-    @SerializedName("subreddit") @Expose private val subredditName: String,
-    @SerializedName("created_utc") @Expose private val createdTimeUtc: Long,
-    @SerializedName("thumbnail") @Expose private val thumbnail: String,
-    @SerializedName("score") @Expose private val scoreCount: Long,
-    @SerializedName("num_comments") @Expose private val commentsCount: Long,
-    @SerializedName("permalink") @Expose private val permaLink: String
+    @SerializedName("author") @Expose val authorName: String,
+    @SerializedName("subreddit") @Expose val subredditName: String,
+    @SerializedName("created_utc") @Expose val createdTimeUtcSeconds: Long,
+    @SerializedName("thumbnail") @Expose val thumbnail: String,
+    @SerializedName("score") @Expose val scoreCount: Long,
+    @SerializedName("num_comments") @Expose val commentsCount: Long,
+    @SerializedName("permalink") @Expose val permaLink: String
 ) {
 
     val author: String
@@ -28,13 +28,13 @@ data class RedditPost(
         get() = "r/$subredditName"
 
     val creationTime: String
-        get() = createdTimeUtc.timeAgo()
+        get() = createdTimeUtcSeconds.let(TimeUnit.SECONDS::toMillis).timeAgo()
 
     val imageUrl: String?
         get() = if (thumbnail.startsWith("http")) thumbnail else null
 
     val score: String = scoreCount.roundToK()
-    val comments: String = commentsCount.roundToK()
+    val commentsDisplay: String = commentsCount.roundToK()
 
     val link: String
         get() = RedditApi.BASE_URL + permaLink

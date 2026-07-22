@@ -7,7 +7,7 @@ import androidx.paging.DataSource;
 
 import com.testsite.reddittop.data.source.ReportingDataSourceFactory;
 import com.testsite.reddittop.data.source.api.RedditApi;
-import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.data.model.RedditPostDTO;
 
 /**
  * Created by paulf
@@ -16,7 +16,7 @@ import com.testsite.reddittop.data.RedditPost;
  * This allows us to channel its network request status etc back to the UI.
  */
 @Deprecated
-public class PostsRemoteDataSourceFactory extends DataSource.Factory<String, RedditPost>
+public class PostsRemoteDataSourceFactory extends DataSource.Factory<String, RedditPostDTO>
         implements ReportingDataSourceFactory<PageKeyedPostsRemoteDataSource> {
 
     private final RedditApi api;
@@ -29,7 +29,7 @@ public class PostsRemoteDataSourceFactory extends DataSource.Factory<String, Red
 
     @NonNull
     @Override
-    public DataSource<String, RedditPost> create() {
+    public DataSource<String, RedditPostDTO> create() {
         PageKeyedPostsRemoteDataSource source = new PageKeyedPostsRemoteDataSource(api);
         sourceLiveData.postValue(source);
         return source;

@@ -1,7 +1,7 @@
 package com.testsite.reddittop.utils
 
 import java.text.DecimalFormat
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 fun Long.roundToK() : String {
@@ -13,7 +13,7 @@ fun Long.roundToK() : String {
 }
 
 fun Long.timeAgo() : String {
-    val ago: Long = System.currentTimeMillis() - this * 1000
+    val ago: Long = System.currentTimeMillis() - this
 
     val days = TimeUnit.MILLISECONDS.toDays(ago).toInt()
     val hours = TimeUnit.MILLISECONDS.toHours(ago).toInt()

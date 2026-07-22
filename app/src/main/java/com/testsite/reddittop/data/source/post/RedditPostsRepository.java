@@ -8,7 +8,7 @@ import com.testsite.reddittop.data.source.BaseRepository;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.post.remote.PageKeyedPostsRemoteDataSource;
 import com.testsite.reddittop.data.source.post.remote.PostsRemoteDataSourceFactory;
-import com.testsite.reddittop.data.RedditPost;
+import com.testsite.reddittop.data.model.RedditPostDTO;
 import com.testsite.reddittop.utils.models.UIListing;
 
 import java.util.concurrent.Executor;
@@ -39,12 +39,12 @@ public class RedditPostsRepository extends BaseRepository<PageKeyedPostsRemoteDa
     }
 
     @Override
-    public UIListing<PagedList<RedditPost>> getTopPosts(int size) {
+    public UIListing<PagedList<RedditPostDTO>> getTopPosts(int size) {
         PagedList.Config pagedListConfig =
                 new PagedList.Config.Builder()
                         .setInitialLoadSizeHint(size + 1)
                         .setPageSize(size).build();
-        LiveData<PagedList<RedditPost>> pagedListLiveData = new LivePagedListBuilder<>(getSourceFactory(), pagedListConfig)
+        LiveData<PagedList<RedditPostDTO>> pagedListLiveData = new LivePagedListBuilder<>(getSourceFactory(), pagedListConfig)
                 .setFetchExecutor(networkExecutor)
                 .build();
 
