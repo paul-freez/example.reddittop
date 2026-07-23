@@ -1,6 +1,6 @@
 package com.testsite.reddittop.data
 
-import com.testsite.reddittop.api.RedditAuthApi
+import com.testsite.reddittop.BuildConfig
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.Credentials
@@ -20,7 +20,7 @@ class CredentialsContainer(private val tokenManager: TokenManager) {
 
     fun get() = when {
         token == null ||
-                token!!.isExpired -> Credentials.basic(RedditAuthApi.CLIENT_ID, "")
+                token!!.isExpired -> Credentials.basic(BuildConfig.CLIENT_ID, "")
 
         else -> token!!.fullToken
     }

@@ -15,8 +15,6 @@ interface RedditAuthApi {
     ): OAuthToken
 
     companion object {
-        const val CLIENT_ID = "your_client_id"
-
         const val GRANT_CLIENT = "https://oauth.reddit.com/grants/installed_client"
 
         const val OAUTH_URL = "https://oauth.reddit.com"

@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.secrets)
 }
 
 configure<ApplicationExtension> {
@@ -21,8 +22,6 @@ configure<ApplicationExtension> {
         targetSdk = 37
         versionCode = 3
         versionName = "1.2"
-
-        buildConfigField("String", "USER_NAME", "\"user_name\"")
     }
 
     buildTypes {
@@ -48,6 +47,10 @@ configure<ApplicationExtension> {
             java.srcDir("src/main/kotlin")
         }
     }
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
 }
 
 kotlin {

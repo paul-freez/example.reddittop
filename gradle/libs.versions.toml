@@ -5,6 +5,7 @@ composeCompiler = "2.4.10"
 hilt = "2.60.1"
 ksp = "2.3.10"
 protobufPlugin = "0.10.0"
+secrets = "2.0.1"
 
 composeBom = "2026.06.01"
 lifecycle = "2.11.0"
@@ -77,3 +78,4 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }

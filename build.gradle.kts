@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.protobuf) apply false
     alias(libs.plugins.kapt) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.secrets) apply false
 }
 
 tasks.register<Delete>("clean") {
