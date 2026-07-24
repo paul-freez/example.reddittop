@@ -4,11 +4,12 @@ import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
+import com.testsite.reddittop.components.managers.AppEventsManager
+import com.testsite.reddittop.ui.UIHostedViewModel
 import com.testsite.reddittop.ui.UiEvent
 import com.testsite.reddittop.ui.UiState
 import com.testsite.reddittop.ui.UiStateAction
 import com.testsite.reddittop.ui.UiStateHolder
-import com.testsite.reddittop.ui.UiViewModel
 import com.testsite.reddittop.ui.model.RedditPostUI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -23,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TopPostsScreenViewModel @Inject constructor(
     private val tabsIntent : CustomTabsIntent,
-) : UiViewModel<TopPostsUiState, TopPostsAction, TopPostsEvent>() {
+    eventsManager: AppEventsManager,
+) : UIHostedViewModel<TopPostsUiState, TopPostsAction, TopPostsEvent>(eventsManager) {
     private val _uiState = MutableStateFlow<UiState<TopPostsUiState>>(UiState.Loading)
     override val uiState: StateFlow<UiState<TopPostsUiState>> = _uiState.asStateFlow()
 
@@ -41,6 +43,10 @@ class TopPostsScreenViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    override fun loadContent() {
+        TODO("Not yet implemented")
     }
 }
 

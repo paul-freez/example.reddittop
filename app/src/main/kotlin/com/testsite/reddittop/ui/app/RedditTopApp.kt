@@ -12,6 +12,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,16 +22,28 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.testsite.reddittop.R
+import com.testsite.reddittop.navigation.NavigationManager
 import com.testsite.reddittop.navigation.RedditTopNavHost
+import com.testsite.reddittop.navigation.onNavAction
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RedditTopApp(appViewModel: RedditTopAppViewModel = hiltViewModel()) {
+fun RedditTopApp(
+    navigationManager: NavigationManager,
+    appViewModel: AppViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
     val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
+    AppEffects(
+        navigationManager = navigationManager,
+        navController = navController
+    )
+
     Scaffold(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
         topBar = {
@@ -57,7 +70,7 @@ fun RedditTopApp(appViewModel: RedditTopAppViewModel = hiltViewModel()) {
                 .padding(paddingValues),
             isRefreshing = isRefreshing,
             onRefresh = {
-                // TODO
+                appViewModel.action(AppAction.RefreshPage)
             },
             indicator = {
                 Indicator(
@@ -71,5 +84,16 @@ fun RedditTopApp(appViewModel: RedditTopAppViewModel = hiltViewModel()) {
         ) {
             RedditTopNavHost(navController = navController)
         }
+    }
+}
+
+@Composable
+private fun AppEffects(
+    navigationManager: NavigationManager,
+    navController: NavController
+) {
+    LaunchedEffect(Unit) {
+        navigationManager.navActions
+            .collect { action -> navController.onNavAction(action) }
     }
 }
