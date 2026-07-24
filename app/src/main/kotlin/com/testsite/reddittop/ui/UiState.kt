@@ -1,5 +1,8 @@
 package com.testsite.reddittop.ui
 
+/**
+ * Mapper interface for UI states for screens
+ */
 interface UiStateHolder
 sealed interface UiState<out T: UiStateHolder> {
     data object Loading : UiState<Nothing>

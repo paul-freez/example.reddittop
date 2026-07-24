@@ -19,7 +19,7 @@ import com.testsite.reddittop.ui.UiState
 import com.testsite.reddittop.ui.components.Error
 import com.testsite.reddittop.ui.components.Loading
 import com.testsite.reddittop.ui.model.RedditPostUI
-import com.testsite.reddittop.ui.screen.top.components.RedditPostCard
+import com.testsite.reddittop.ui.screen.top.components.TopPostCard
 
 @Composable
 fun TopPostsScreen(viewModel: TopPostsScreenViewModel, modifier: Modifier = Modifier) {
@@ -69,7 +69,7 @@ private fun TopPostsScreenLayout(
 ) {
     LazyColumn(modifier = modifier) {
         items(items = posts, key = RedditPostUI::link) { post ->
-            RedditPostCard(post = post, onPostClicked = { onPostClick(post) })
+            TopPostCard(post = post, onPostClicked = { onPostClick(post) })
         }
     }
 }

@@ -38,14 +38,14 @@ import com.testsite.reddittop.utils.RedditPostPreview
 
 @Preview("Post preview")
 @Composable
-private fun PreviewRedditPostCard(
+private fun PreviewTopPostCard(
     @PreviewParameter(RedditPostPreview::class) post: RedditPostUI
 ) {
-    RedditPostCard(post = post, onPostClicked = {})
+    TopPostCard(post = post, onPostClicked = {})
 }
 
 @Composable
-fun RedditPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
+fun TopPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
     Card(
         modifier = Modifier
             .height(150.dp)

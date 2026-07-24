@@ -6,6 +6,8 @@ hilt = "2.60.1"
 ksp = "2.3.10"
 protobufPlugin = "0.10.0"
 secrets = "2.0.1"
+hiltNavigationCompose = "1.2.0"
+navigationCompose = "2.9.8"
 
 composeBom = "2026.06.01"
 lifecycle = "2.11.0"
@@ -65,10 +67,12 @@ glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", versi
 glide-ksp = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glide" }
 
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

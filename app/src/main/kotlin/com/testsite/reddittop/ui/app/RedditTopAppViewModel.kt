@@ -1,0 +1,9 @@
+package com.testsite.reddittop.ui.app
+
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class RedditTopAppViewModel @Inject constructor() : ViewModel() {
+}
