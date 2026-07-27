@@ -16,7 +16,7 @@ import com.testsite.reddittop.data.source.api.RedditApiFactory;
 import com.testsite.reddittop.data.source.client.RedditClientRepository;
 import com.testsite.reddittop.data.source.client.remote.model.OAuthToken;
 import com.testsite.reddittop.data.source.post.RedditPostsRepository;
-import com.testsite.reddittop.data.model.RedditPostDTO;
+import com.testsite.reddittop.data.posts.model.RedditPostDTO;
 import com.testsite.reddittop.models.StatusAwareViewModel;
 import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 import com.testsite.reddittop.utils.models.UIListing;

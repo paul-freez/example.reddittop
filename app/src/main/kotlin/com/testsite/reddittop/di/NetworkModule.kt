@@ -2,15 +2,18 @@ package com.testsite.reddittop.di
 
 import com.google.gson.Gson
 import com.testsite.reddittop.BuildConfig
-import com.testsite.reddittop.api.RedditApi
-import com.testsite.reddittop.api.RedditAuthApi
-import com.testsite.reddittop.data.CredentialsContainer
-import com.testsite.reddittop.data.TokenManager
+import com.testsite.reddittop.data.client.RedditAuthApi
+import com.testsite.reddittop.data.client.model.local.OAuthTokenLocal
+import com.testsite.reddittop.data.client.source.ClientDataSource
+import com.testsite.reddittop.data.posts.RedditApi
+import com.testsite.reddittop.domain.DomainMapper.toDomain
 import com.testsite.reddittop.utils.connectivity.ConnectivityInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
+import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,7 +24,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetworkingModule {
+object NetworkModule {
 
     @Provides
     @Singleton
@@ -56,14 +59,21 @@ class NetworkingModule {
     fun provideRedditAuthUrl(): String = RedditAuthApi.OAUTH_URL
 
     @Provides
-    @Singleton
-    fun provideCredentials(tokenManager: TokenManager): CredentialsContainer = CredentialsContainer(tokenManager)
-
-    @Provides
     @Auth
     @Singleton
-    fun provideAuthTokenInterceptor(@Auth token: CredentialsContainer): Interceptor =
-        provideHeaderInterceptor("Authorization", token.get())
+    fun provideAuthTokenInterceptor(local: ClientDataSource<OAuthTokenLocal>): Interceptor =
+        Interceptor { chain ->
+            val token = runBlocking { local.retrieveToken().toDomain() }
+            val authHeader = when {
+                token.isExpired() -> Credentials.basic(BuildConfig.CLIENT_ID, "")
+                else -> token.fullToken
+            }
+            chain.proceed(
+                chain.request().newBuilder()
+                    .header("Authorization", authHeader)
+                    .build()
+            )
+        }
 
     @Provides
     @Singleton
@@ -135,19 +145,15 @@ class NetworkingModule {
     @Retention(AnnotationRetention.BINARY)
     annotation class Auth
 
-    companion object {
-
-        private fun provideHeaderInterceptor(headerName: String, headerValue: String) =
-            Interceptor { chain ->
-                chain.proceed(
-                    chain.request().newBuilder()
-                        .header(
-                            headerName,
-                            headerValue
-                        )
-                        .build()
-                )
-            }
-    }
-
+    private fun provideHeaderInterceptor(headerName: String, headerValue: String) =
+        Interceptor { chain ->
+            chain.proceed(
+                chain.request().newBuilder()
+                    .header(
+                        headerName,
+                        headerValue
+                    )
+                    .build()
+            )
+        }
 }

@@ -7,7 +7,7 @@ import androidx.paging.DataSource;
 
 import com.testsite.reddittop.data.source.ReportingDataSourceFactory;
 import com.testsite.reddittop.data.source.api.RedditApi;
-import com.testsite.reddittop.data.model.RedditPostDTO;
+import com.testsite.reddittop.data.posts.model.RedditPostDTO;
 
 /**
  * Created by paulf

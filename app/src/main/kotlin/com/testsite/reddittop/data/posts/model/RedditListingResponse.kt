@@ -1,8 +1,7 @@
-package com.testsite.reddittop.data
+package com.testsite.reddittop.data.posts.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.testsite.reddittop.data.model.RedditPostDTO
 
 data class RedditListingResponse(@SerializedName("data") @Expose val data: ResponseData)
 

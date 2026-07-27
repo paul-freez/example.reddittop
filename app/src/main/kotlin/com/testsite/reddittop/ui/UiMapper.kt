@@ -1,7 +1,7 @@
 package com.testsite.reddittop.ui
 
-import com.testsite.reddittop.api.RedditApi
-import com.testsite.reddittop.domain.model.RedditPost
+import com.testsite.reddittop.data.posts.RedditApi
+import com.testsite.reddittop.domain.posts.model.RedditPost
 import com.testsite.reddittop.ui.model.RedditPostUI
 import com.testsite.reddittop.utils.roundToK
 import com.testsite.reddittop.utils.timeAgo

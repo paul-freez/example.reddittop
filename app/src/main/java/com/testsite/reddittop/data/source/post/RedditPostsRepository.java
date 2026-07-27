@@ -8,7 +8,7 @@ import com.testsite.reddittop.data.source.BaseRepository;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.post.remote.PageKeyedPostsRemoteDataSource;
 import com.testsite.reddittop.data.source.post.remote.PostsRemoteDataSourceFactory;
-import com.testsite.reddittop.data.model.RedditPostDTO;
+import com.testsite.reddittop.data.posts.model.RedditPostDTO;
 import com.testsite.reddittop.utils.models.UIListing;
 
 import java.util.concurrent.Executor;

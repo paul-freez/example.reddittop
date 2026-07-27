@@ -9,7 +9,7 @@ import androidx.paging.PageKeyedDataSource;
 import com.testsite.reddittop.data.source.BaseReportingDataSource;
 import com.testsite.reddittop.data.source.api.RedditApi;
 import com.testsite.reddittop.data.source.post.remote.model.RedditListingResponse;
-import com.testsite.reddittop.data.model.RedditPostDTO;
+import com.testsite.reddittop.data.posts.model.RedditPostDTO;
 import com.testsite.reddittop.utils.connectivity.ErrorHandler;
 
 import java.util.List;

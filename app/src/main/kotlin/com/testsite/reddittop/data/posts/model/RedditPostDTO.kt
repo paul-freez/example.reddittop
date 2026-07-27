@@ -1,8 +1,8 @@
-package com.testsite.reddittop.data.model
+package com.testsite.reddittop.data.posts.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.testsite.reddittop.api.RedditApi
+import com.testsite.reddittop.data.posts.RedditApi
 import com.testsite.reddittop.utils.roundToK
 import com.testsite.reddittop.utils.timeAgo
 import java.util.concurrent.TimeUnit

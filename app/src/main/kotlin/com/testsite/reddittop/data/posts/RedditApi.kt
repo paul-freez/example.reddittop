@@ -1,8 +1,9 @@
-package com.testsite.reddittop.api
+package com.testsite.reddittop.data.posts
 
-import com.testsite.reddittop.data.RedditListingResponse
-import com.testsite.reddittop.data.TimeFilter
-import retrofit2.http.*
+import com.testsite.reddittop.data.posts.model.TimeFilter
+import com.testsite.reddittop.data.posts.model.RedditListingResponse
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface RedditApi {
 

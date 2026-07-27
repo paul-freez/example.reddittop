@@ -1,5 +1,6 @@
-package com.testsite.reddittop.domain.model
+package com.testsite.reddittop.domain.posts.model.dummy
 
+import com.testsite.reddittop.domain.posts.model.RedditPost
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 

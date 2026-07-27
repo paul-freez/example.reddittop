@@ -1,4 +1,4 @@
-package com.testsite.reddittop.domain.model
+package com.testsite.reddittop.domain.posts.model
 
 /**
  * Created by paulf

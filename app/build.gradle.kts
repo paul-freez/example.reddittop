@@ -79,6 +79,7 @@ protobuf {
 }
 
 dependencies {
+    implementation(libs.datastore.preferences.core)
     // Compose
     val composeBom = platform(libs.compose.bom)
     implementation(composeBom)

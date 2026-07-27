@@ -1,4 +1,4 @@
-package com.testsite.reddittop.data
+package com.testsite.reddittop.data.posts.model
 
 import com.google.gson.annotations.SerializedName
 

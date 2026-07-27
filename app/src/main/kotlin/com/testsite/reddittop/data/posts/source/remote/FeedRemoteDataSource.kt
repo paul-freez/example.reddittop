@@ -1,10 +1,10 @@
-package com.testsite.reddittop.data.source.remote
+package com.testsite.reddittop.data.posts.source.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.testsite.reddittop.api.RedditApi
-import com.testsite.reddittop.data.model.RedditPostDTO
-import com.testsite.reddittop.data.TimeFilter
+import com.testsite.reddittop.data.posts.RedditApi
+import com.testsite.reddittop.data.posts.model.RedditPostDTO
+import com.testsite.reddittop.data.posts.model.TimeFilter
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ class FeedRemoteDataSource @Inject constructor(
         }
     }
 
-    override suspend fun load(params: LoadParams<String>): PagingSource.LoadResult<String, RedditPostDTO> {
+    override suspend fun load(params: LoadParams<String>): LoadResult<String, RedditPostDTO> {
         val index = params.key ?: ""
         try {
             val response = api.getTopPosts(feedTimeSort, index, params.loadSize)

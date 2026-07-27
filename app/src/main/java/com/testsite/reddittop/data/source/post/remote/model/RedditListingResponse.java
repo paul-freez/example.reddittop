@@ -2,7 +2,7 @@ package com.testsite.reddittop.data.source.post.remote.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.testsite.reddittop.data.model.RedditPostDTO;
+import com.testsite.reddittop.data.posts.model.RedditPostDTO;
 
 import java.util.ArrayList;
 import java.util.List;

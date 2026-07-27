@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.testsite.reddittop.utils.OnPostClickListener;
 import com.testsite.reddittop.databinding.ItemRedditPostBinding;
-import com.testsite.reddittop.data.model.RedditPostDTO;
+import com.testsite.reddittop.data.posts.model.RedditPostDTO;
 
 /**
  * Created by paulf

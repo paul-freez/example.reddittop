@@ -17,7 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.testsite.reddittop.R;
-import com.testsite.reddittop.data.model.RedditPostDTO;
+import com.testsite.reddittop.data.posts.model.RedditPostDTO;
 import com.testsite.reddittop.databinding.ActivityTopListBinding;
 import com.testsite.reddittop.utils.ChromeTabsIntent;
 import com.testsite.reddittop.utils.OnPostClickListener;
