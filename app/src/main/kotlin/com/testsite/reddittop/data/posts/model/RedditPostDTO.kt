@@ -1,7 +1,8 @@
 package com.testsite.reddittop.data.posts.model
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import com.testsite.reddittop.data.posts.RedditApi
 import com.testsite.reddittop.utils.roundToK
 import com.testsite.reddittop.utils.timeAgo
@@ -10,15 +11,16 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by paulf
  */
+@Serializable
 data class RedditPostDTO(
-    @SerializedName("title") @Expose val title: String,
-    @SerializedName("author") @Expose val authorName: String,
-    @SerializedName("subreddit") @Expose val subredditName: String,
-    @SerializedName("created_utc") @Expose val createdTimeUtcSeconds: Long,
-    @SerializedName("thumbnail") @Expose val thumbnail: String,
-    @SerializedName("score") @Expose val scoreCount: Long,
-    @SerializedName("num_comments") @Expose val commentsCount: Long,
-    @SerializedName("permalink") @Expose val permaLink: String
+    @SerialName("title") val title: String,
+    @SerialName("author") val authorName: String,
+    @SerialName("subreddit") val subredditName: String,
+    @SerialName("created_utc") val createdTimeUtcSeconds: Long,
+    @SerialName("thumbnail") val thumbnail: String,
+    @SerialName("score") val scoreCount: Long,
+    @SerialName("num_comments") val commentsCount: Long,
+    @SerialName("permalink") val permaLink: String
 ) {
 
     val author: String
@@ -33,7 +35,9 @@ data class RedditPostDTO(
     val imageUrl: String?
         get() = if (thumbnail.startsWith("http")) thumbnail else null
 
+    @Transient
     val score: String = scoreCount.roundToK()
+    @Transient
     val commentsDisplay: String = commentsCount.roundToK()
 
     val link: String

@@ -1,14 +1,17 @@
 package com.testsite.reddittop.data.posts.model
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-data class RedditListingResponse(@SerializedName("data") @Expose val data: ResponseData)
+@Serializable
+data class RedditListingResponse(@SerialName("data") val data: ResponseData)
 
+@Serializable
 data class ResponseData(
-    @SerializedName("after") @Expose val afterKey: String,
-    @SerializedName("before") @Expose val beforeKey: String,
-    @SerializedName("children") @Expose val content: List<DataBody>
+    @SerialName("after") val afterKey: String,
+    @SerialName("before") val beforeKey: String,
+    @SerialName("children") val content: List<DataBody>
 )
 
-data class DataBody(@SerializedName("data") @Expose val post: RedditPostDTO)
+@Serializable
+data class DataBody(@SerialName("data") val post: RedditPostDTO)

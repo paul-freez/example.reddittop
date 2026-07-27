@@ -1,13 +1,14 @@
 package com.testsite.reddittop.data.client.model.remote
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class OAuthTokenRemote(
-    @SerializedName("access_token") @Expose
+    @SerialName("access_token")
     val token: String,
-    @SerializedName("expires_in") @Expose
+    @SerialName("expires_in")
     val expiresIn: Long,
-    @SerializedName("token_type") @Expose
+    @SerialName("token_type")
     val type: String
 )

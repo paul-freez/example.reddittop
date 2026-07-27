@@ -1,6 +1,6 @@
 package com.testsite.reddittop.di
 
-import com.google.gson.Gson
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.testsite.reddittop.BuildConfig
 import com.testsite.reddittop.data.client.RedditAuthApi
 import com.testsite.reddittop.data.client.model.local.OAuthTokenLocal
@@ -13,12 +13,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
 import okhttp3.Credentials
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Converter
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -45,8 +47,18 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideGsonConverterFactory(gson: Gson): GsonConverterFactory =
-        GsonConverterFactory.create(gson)
+    fun provideJson(): Json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        prettyPrint = true
+    }
+
+    @Provides
+    @Singleton
+    fun provideKotlinxSerializationConverterFactory(json: Json): Converter.Factory {
+        val contentType = "application/json".toMediaType()
+        return json.asConverterFactory(contentType)
+    }
 
     @Singleton
     @Provides
@@ -95,11 +107,11 @@ object NetworkModule {
     fun provideAuthRetrofit(
         @Auth url: String,
         okHttpClient: OkHttpClient,
-        gsonConverterFactory: GsonConverterFactory
+        converterFactory: Converter.Factory
     ): Retrofit = Retrofit.Builder()
         .baseUrl(url)
         .client(okHttpClient)
-        .addConverterFactory(gsonConverterFactory)
+        .addConverterFactory(converterFactory)
         // Do we really need complicated error handling? Can't we just rely on Exceptions?
 //        .addCallAdapterFactory(new ErrorHandler.ErrorHandlingCallAdapterFactory())
         // TODO: This is probably redundant
@@ -112,11 +124,11 @@ object NetworkModule {
     fun provideRetrofit(
         @NonAuth url: String,
         okHttpClient: OkHttpClient,
-        gsonConverterFactory: GsonConverterFactory
+        converterFactory: Converter.Factory
     ): Retrofit = Retrofit.Builder()
         .baseUrl(url)
         .client(okHttpClient)
-        .addConverterFactory(gsonConverterFactory)
+        .addConverterFactory(converterFactory)
         // Do we really need complicated error handling? Can't we just rely on Exceptions?
 //        .addCallAdapterFactory(new ErrorHandler.ErrorHandlingCallAdapterFactory())
         // TODO: This is probably redundant

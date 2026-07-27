@@ -1,23 +1,25 @@
 package com.testsite.reddittop.data.posts.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class TimeFilter {
-    @SerializedName("all")
+    @SerialName("all")
     ALL,
 
-    @SerializedName("year")
+    @SerialName("year")
     YEAR,
 
-    @SerializedName("month")
+    @SerialName("month")
     MONTH,
 
-    @SerializedName("week")
+    @SerialName("week")
     WEEK,
 
-    @SerializedName("day")
+    @SerialName("day")
     DAY,
 
-    @SerializedName("hour")
+    @SerialName("hour")
     HOUR;
 }
