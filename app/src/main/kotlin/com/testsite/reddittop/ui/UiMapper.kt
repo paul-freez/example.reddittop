@@ -1,6 +1,6 @@
 package com.testsite.reddittop.ui
 
-import com.testsite.reddittop.data.posts.RedditApi
+import com.testsite.reddittop.core.Constants
 import com.testsite.reddittop.domain.posts.model.RedditPost
 import com.testsite.reddittop.ui.model.RedditPostUI
 import com.testsite.reddittop.utils.roundToK
@@ -17,6 +17,6 @@ object UiMapper {
         scoreCountDisplay = scoreCount.roundToK(),
         commentsCount = commentsCount,
         commentsCountDisplay = commentsCount.roundToK(),
-        link = RedditApi.BASE_URL + permaLink
+        link = Constants.REDDIT_EXT + permaLink
     )
 }

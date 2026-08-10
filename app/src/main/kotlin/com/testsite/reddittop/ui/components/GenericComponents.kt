@@ -28,7 +28,7 @@ fun Loading() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
             modifier = Modifier.size(85.dp),
-            color = colorResource(R.color.colorPrimary)
+            color = colorResource(R.color.colorPrimary) // TODO: Replace with compose color
         )
     }
 }
@@ -51,7 +51,7 @@ fun Error(errorMsg: String) {
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.SemiBold,
             fontSize = 30.sp,
-            color = colorResource(R.color.design_default_color_error)
+            color = colorResource(R.color.design_default_color_error) // TODO: Replace with compose color
         )
     }
 }

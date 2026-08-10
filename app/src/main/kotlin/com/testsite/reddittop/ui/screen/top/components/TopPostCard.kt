@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,17 +47,17 @@ private fun PreviewTopPostCard(
 fun TopPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
     Card(
         modifier = Modifier
-            .height(150.dp)
-            .padding(horizontal = 4.dp)
-            .padding(bottom = 8.dp)
             .fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = Color.White), // TODO: Replace with nice color
         onClick = onPostClicked,
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(8.dp)
+        ) {
             Row {
                 AsyncImage(
-                    model = post.thumbnail,
+                    model = post.thumbnail, // TODO: It does not work
                     contentDescription = "Image",
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = R.drawable.img_noimage),
@@ -71,7 +70,7 @@ fun TopPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
                 Column(modifier = Modifier.padding(start = 8.dp)) {
                     Text(
                         text = post.title,
-                        color = colorResource(id = R.color.textcolor_title),
+                        color = colorResource(id = R.color.textcolor_title), // TODO: Replace with compose color
                         fontSize = 20.sp,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
@@ -79,7 +78,7 @@ fun TopPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
                     )
                     Text(
                         text = post.subreddit,
-                        color = colorResource(id = R.color.textcolor_primary),
+                        color = colorResource(id = R.color.textcolor_primary), // TODO: Replace with compose color
                         fontSize = 16.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -90,7 +89,7 @@ fun TopPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
                     ) {
                         Text(
                             text = "by ${post.author}",
-                            color = colorResource(id = R.color.textcolor_secondary),
+                            color = colorResource(id = R.color.textcolor_secondary), // TODO: Replace with compose color
                             fontSize = 14.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -98,7 +97,7 @@ fun TopPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
                         )
                         Text(
                             text = post.creationTimeDisplay,
-                            color = colorResource(id = R.color.textcolor_secondary),
+                            color = colorResource(id = R.color.textcolor_secondary), // TODO: Replace with compose color
                             fontSize = 14.sp,
                             fontStyle = FontStyle.Italic,
                         )
@@ -110,9 +109,10 @@ fun TopPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
                 modifier = Modifier.padding(top = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // TODO: Looks like bottom row is cut on emulator. Check behavior
                 Text(
                     text = post.scoreCountDisplay,
-                    color = colorResource(id = R.color.colorPrimary),
+                    color = colorResource(id = R.color.colorPrimary), // TODO: Replace with compose color
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -123,7 +123,7 @@ fun TopPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
                         post.commentsCount.toInt(),
                         post.commentsCountDisplay
                     ),
-                    color = colorResource(id = R.color.textcolor_secondary),
+                    color = colorResource(id = R.color.textcolor_secondary), // TODO: Replace with compose color
                     fontSize = 14.sp,
                 )
             }

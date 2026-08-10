@@ -4,7 +4,10 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
@@ -98,7 +102,11 @@ private fun TopPostsScreenLayout(
     onPostClick: (RedditPostUI) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier = modifier) {
+    LazyColumn(
+        modifier = modifier.background(Color.Gray), // TODO: Replace with nice color
+        contentPadding = PaddingValues(4.dp, 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
         items(
             count = posts.itemCount,
             key = posts.itemKey { it.link },
@@ -117,7 +125,7 @@ private fun TopPostsScreenLayout(
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(
-                        color = colorResource(R.color.colorPrimary)
+                        color = colorResource(R.color.colorPrimary) // TODO: Replace with compose color
                     )
                 }
             }
