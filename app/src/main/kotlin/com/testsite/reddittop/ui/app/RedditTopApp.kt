@@ -71,6 +71,7 @@ fun RedditTopApp(
                 .fillMaxSize()
                 .padding(paddingValues),
             isRefreshing = isRefreshing,
+            state = pullToRefreshState,
             onRefresh = {
                 appViewModel.action(AppAction.RefreshPage)
             },

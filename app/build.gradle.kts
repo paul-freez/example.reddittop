@@ -116,6 +116,7 @@ dependencies {
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.paging.runtime)
+    implementation(libs.paging.compose)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
