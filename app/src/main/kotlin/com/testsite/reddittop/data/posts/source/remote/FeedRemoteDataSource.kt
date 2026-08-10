@@ -29,7 +29,7 @@ class FeedRemoteDataSource @AssistedInject constructor(
             with(response.data) {
                 return LoadResult.Page(
                     data = content.map { it.post },
-                    prevKey = null, // Always going forward
+                    prevKey = beforeKey,
                     nextKey = afterKey
                 )
             }

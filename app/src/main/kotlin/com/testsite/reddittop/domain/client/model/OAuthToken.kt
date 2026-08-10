@@ -11,6 +11,6 @@ data class OAuthToken(
 
     override fun toString(): String {
         val remainingMinutes = TimeUnit.MILLISECONDS.toMinutes(expirationTime - System.currentTimeMillis())
-        return "$fullToken expires in $remainingMinutes minutes"
+        return "this token expires in $remainingMinutes minutes"
     }
 }

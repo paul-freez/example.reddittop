@@ -60,32 +60,17 @@ object NetworkModule {
         return json.asConverterFactory(contentType)
     }
 
-    @Singleton
-    @Provides
-    @Auth
-    fun provideRedditBaseUrl(): String = RedditApi.BASE_URL
-
-    @Singleton
-    @Provides
-    @NonAuth
-    fun provideRedditAuthUrl(): String = RedditAuthApi.OAUTH_URL
-
     @Provides
     @Auth
     @Singleton
-    fun provideAuthTokenInterceptor(local: ClientDataSource<OAuthTokenLocal>): Interceptor =
-        Interceptor { chain ->
-            val token = runBlocking { local.retrieveToken().toDomain() }
-            val authHeader = when {
-                token.isExpired() -> Credentials.basic(BuildConfig.CLIENT_ID, "")
-                else -> token.fullToken
-            }
-            chain.proceed(
-                chain.request().newBuilder()
-                    .header("Authorization", authHeader)
-                    .build()
-            )
+    fun provideAuthTokenInterceptor(local: ClientDataSource<OAuthTokenLocal>): Interceptor {
+        val token = runBlocking { local.retrieveToken().toDomain() }
+        val authHeader = when {
+            token.isExpired() -> Credentials.basic(BuildConfig.CLIENT_ID, "")
+            else -> token.fullToken
         }
+        return provideHeaderInterceptor("Authorization", authHeader)
+    }
 
     @Provides
     @Singleton
@@ -103,47 +88,28 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @Auth
-    fun provideAuthRetrofit(
-        @Auth url: String,
+    fun provideRedditApi(
         okHttpClient: OkHttpClient,
         converterFactory: Converter.Factory
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(url)
-        .client(okHttpClient)
-        .addConverterFactory(converterFactory)
-        // Do we really need complicated error handling? Can't we just rely on Exceptions?
-//        .addCallAdapterFactory(new ErrorHandler.ErrorHandlingCallAdapterFactory())
-        // TODO: This is probably redundant
-//        .addConverterFactory(new EnumRetrofitConverterFactory())
-        .build()
+    ): RedditApi =
+        Retrofit.Builder()
+            .baseUrl(RedditApi.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(converterFactory)
+            .build()
+            .create(RedditApi::class.java)
 
     @Provides
     @Singleton
-    @NonAuth
-    fun provideRetrofit(
-        @NonAuth url: String,
+    fun provideRedditAuthApi(
         okHttpClient: OkHttpClient,
         converterFactory: Converter.Factory
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(url)
-        .client(okHttpClient)
-        .addConverterFactory(converterFactory)
-        // Do we really need complicated error handling? Can't we just rely on Exceptions?
-//        .addCallAdapterFactory(new ErrorHandler.ErrorHandlingCallAdapterFactory())
-        // TODO: This is probably redundant
-//        .addConverterFactory(new EnumRetrofitConverterFactory())
-        .build()
-
-    @Provides
-    @Singleton
-    fun provideRedditApi(@Auth retrofit: Retrofit): RedditApi =
-        retrofit.create(RedditApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideRedditAuthApi(@NonAuth retrofit: Retrofit): RedditAuthApi =
-        retrofit.create(RedditAuthApi::class.java)
+    ): RedditAuthApi =
+        Retrofit.Builder()
+            .baseUrl(RedditAuthApi.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(converterFactory)
+            .build().create(RedditAuthApi::class.java)
 
     @Qualifier
     @Retention(AnnotationRetention.BINARY)

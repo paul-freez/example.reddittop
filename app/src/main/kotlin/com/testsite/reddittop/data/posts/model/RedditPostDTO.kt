@@ -1,11 +1,11 @@
 package com.testsite.reddittop.data.posts.model
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import com.testsite.reddittop.data.posts.RedditApi
 import com.testsite.reddittop.utils.roundToK
 import com.testsite.reddittop.utils.timeAgo
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.util.concurrent.TimeUnit
 
 /**
@@ -16,12 +16,15 @@ data class RedditPostDTO(
     @SerialName("title") val title: String,
     @SerialName("author") val authorName: String,
     @SerialName("subreddit") val subredditName: String,
-    @SerialName("created_utc") val createdTimeUtcSeconds: Long,
+    // For some reason, API returns time with .0 at the end???
+    @SerialName("created_utc") private val _createdTimeUtcSeconds: Double,
     @SerialName("thumbnail") val thumbnail: String,
     @SerialName("score") val scoreCount: Long,
     @SerialName("num_comments") val commentsCount: Long,
     @SerialName("permalink") val permaLink: String
 ) {
+
+    val createdTimeUtcSeconds : Long = _createdTimeUtcSeconds.toLong()
 
     val author: String
         get() = "u/$authorName"

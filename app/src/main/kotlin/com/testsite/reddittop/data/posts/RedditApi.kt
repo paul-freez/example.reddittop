@@ -15,6 +15,6 @@ interface RedditApi {
     ): RedditListingResponse
 
     companion object {
-        const val BASE_URL = "https://www.reddit.com"
+        const val BASE_URL = "https://oauth.reddit.com"
     }
 }

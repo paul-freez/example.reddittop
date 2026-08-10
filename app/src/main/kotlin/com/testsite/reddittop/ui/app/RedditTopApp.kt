@@ -2,8 +2,6 @@ package com.testsite.reddittop.ui.app
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -51,11 +49,12 @@ fun RedditTopApp(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.app_name))
+                    Text(text = stringResource(R.string.app_name))  // TODO: Add some styling
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.colorPrimary),
-                    titleContentColor = colorResource(R.color.colorAccent)
+                    scrolledContainerColor = colorResource(R.color.colorPrimary), // TODO: Replace with compose color
+                    containerColor = colorResource(R.color.colorPrimary), // TODO: Replace with compose color
+                    titleContentColor = colorResource(R.color.colorAccent) // TODO: Replace with compose color
                 ),
                 scrollBehavior = appBarScrollBehavior
             )
@@ -79,15 +78,16 @@ fun RedditTopApp(
                 Indicator(
                     modifier = Modifier.align(Alignment.TopCenter),
                     isRefreshing = isRefreshing,
-                    containerColor = colorResource(R.color.colorAccent),
-                    color = colorResource(R.color.colorPrimary),
+                    containerColor = colorResource(R.color.colorAccent), // TODO: Replace with compose color
+                    color = colorResource(R.color.colorPrimary), // TODO: Replace with compose color
                     state = pullToRefreshState
                 )
             }
         ) {
-            RedditTopNavHost(navController = navController, Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()))
+            RedditTopNavHost(
+                navController = navController,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
