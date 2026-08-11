@@ -1,7 +1,7 @@
 package com.testsite.reddittop.ui.app
 
-import androidx.lifecycle.viewModelScope
 import com.testsite.reddittop.components.managers.AppEventsManager
+import com.testsite.reddittop.core.ExceptionHandler
 import com.testsite.reddittop.data.client.repo.ClientRepository
 import com.testsite.reddittop.ui.UiEvent
 import com.testsite.reddittop.ui.UiState
@@ -15,16 +15,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
+    exceptionHandler: ExceptionHandler,
     private val appEventsManager: AppEventsManager,
-    private val clientRepository: ClientRepository,
-) : UiViewModel<AppState, AppAction, AppEvent>() {
+    clientRepository: ClientRepository,
+) : UiViewModel<AppState, AppAction, AppEvent>(exceptionHandler) {
 
-    private val _uiState = MutableStateFlow(UiState.Available(AppState))
+    private val _uiState = MutableStateFlow<UiState<AppState>>(UiState.Loading)
     override val uiState: StateFlow<UiState<AppState>>
         get() = _uiState.asStateFlow()
 
@@ -33,20 +35,29 @@ class AppViewModel @Inject constructor(
 
     init {
         clientRepository.authenticate()
-            .onEach { token -> action(AppAction.RefreshPage).also { Timber.d(token.toString()) } }
-            .launchIn(viewModelScope)
+            .onEach { token ->
+                _uiState.update { UiState.Available(AppState) }
+                action(AppAction.RefreshPage).also { Timber.d(token.toString()) }
+            }
+            .launchIn(baseViewModelScope)
     }
 
     override fun action(action: AppAction) {
         when (action) {
             AppAction.RefreshPage -> appEventsManager.send(AppEvent.RefreshPage)
+            AppAction.DismissError -> _uiState.update { UiState.Available(AppState)}
         }
+    }
+
+    override fun handleException(throwable: Throwable) {
+        _uiState.update { UiState.Error(throwable) }
     }
 }
 
 data object AppState : UiStateHolder
 sealed interface AppAction : UiStateAction {
     data object RefreshPage : AppAction
+    data object DismissError : AppAction
 }
 
 sealed interface AppEvent : UiEvent {

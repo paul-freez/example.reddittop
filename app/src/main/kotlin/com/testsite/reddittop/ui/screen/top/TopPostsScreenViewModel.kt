@@ -8,6 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.testsite.reddittop.components.managers.AppEventsManager
+import com.testsite.reddittop.core.ExceptionHandler
 import com.testsite.reddittop.data.posts.repo.FeedRepository
 import com.testsite.reddittop.ui.UIHostedViewModel
 import com.testsite.reddittop.ui.UiEvent
@@ -35,10 +36,11 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TopPostsScreenViewModel @Inject constructor(
+    private val exceptionHandler: ExceptionHandler,
     private val tabsIntent: CustomTabsIntent,
     private val feedRepository: FeedRepository,
     eventsManager: AppEventsManager,
-) : UIHostedViewModel<TopPostsUiState, TopPostsAction, TopPostsEvent>(eventsManager) {
+) : UIHostedViewModel<TopPostsUiState, TopPostsAction, TopPostsEvent>(exceptionHandler, eventsManager) {
     private val _uiState = MutableStateFlow<UiState<TopPostsUiState>>(UiState.Loading)
     override val uiState: StateFlow<UiState<TopPostsUiState>> = _uiState.asStateFlow()
 
@@ -65,7 +67,12 @@ class TopPostsScreenViewModel @Inject constructor(
                 )
             }
 
-            is TopPostsAction.OnPostsStateUpdate -> _uiState.update { action.state }
+            is TopPostsAction.OnPostsStateUpdate -> _uiState.update {
+                when (val newState = action.state) {
+                    is UiState.Error -> UiState.Error(exceptionHandler.updateException(newState.error))
+                    else -> newState
+                }
+            }
 
         }
     }

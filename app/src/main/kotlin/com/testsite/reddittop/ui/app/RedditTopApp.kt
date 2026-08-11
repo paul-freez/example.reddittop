@@ -1,9 +1,16 @@
 package com.testsite.reddittop.ui.app
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -22,12 +29,15 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.testsite.reddittop.R
 import com.testsite.reddittop.navigation.NavigationManager
 import com.testsite.reddittop.navigation.RedditTopNavHost
 import com.testsite.reddittop.navigation.onNavAction
+import com.testsite.reddittop.ui.UiState
+import com.testsite.reddittop.ui.components.Loading
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,6 +48,18 @@ fun RedditTopApp(
 ) {
     val navController = rememberNavController()
     val appBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val snackbarHostState = remember { SnackbarHostState() }
+    val uiState by appViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(uiState) {
+        (uiState as? UiState.Error)?.let { errorState ->
+            snackbarHostState.showSnackbar(
+                message = errorState.error.message ?: "Unexpected error",
+                duration = SnackbarDuration.Short
+            )
+            appViewModel.action(AppAction.DismissError)
+        }
+    }
 
     AppEffects(
         navigationManager = navigationManager,
@@ -46,6 +68,7 @@ fun RedditTopApp(
 
     Scaffold(
         modifier = Modifier.nestedScroll(appBarScrollBehavior.nestedScrollConnection),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -84,10 +107,23 @@ fun RedditTopApp(
                 )
             }
         ) {
-            RedditTopNavHost(
-                navController = navController,
-                modifier = Modifier.fillMaxSize()
-            )
+            AnimatedContent(
+                targetState = uiState,
+                transitionSpec = {
+                    fadeIn().togetherWith(fadeOut())
+                },
+                label = "AppContent"
+            ) { state ->
+                when (state) {
+                    is UiState.Loading -> Loading()
+                    is UiState.Error -> TODO()
+
+                    is UiState.Available<*> -> RedditTopNavHost(
+                        navController = navController,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
         }
     }
 }
