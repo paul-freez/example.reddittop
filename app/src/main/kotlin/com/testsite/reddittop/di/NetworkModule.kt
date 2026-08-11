@@ -80,10 +80,10 @@ object NetworkModule {
         @UserAgentInterceptor userAgentInterceptor: Interceptor,
         @Auth authInterceptor: Interceptor,
     ): OkHttpClient = OkHttpClient().newBuilder()
-        .addInterceptor(loggingInterceptor)
         .addInterceptor(connectivityInterceptor)
         .addInterceptor(userAgentInterceptor)
         .addInterceptor(authInterceptor)
+        .addInterceptor(loggingInterceptor)
         .build()
 
     @Provides
