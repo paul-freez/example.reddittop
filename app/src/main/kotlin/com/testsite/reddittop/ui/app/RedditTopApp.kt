@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,6 +39,7 @@ import com.testsite.reddittop.navigation.RedditTopNavHost
 import com.testsite.reddittop.navigation.onNavAction
 import com.testsite.reddittop.ui.UiState
 import com.testsite.reddittop.ui.components.Loading
+import com.testsite.reddittop.utils.toUserMessage
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,10 +53,12 @@ fun RedditTopApp(
     val snackbarHostState = remember { SnackbarHostState() }
     val uiState by appViewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(uiState) {
-        (uiState as? UiState.Error)?.let { errorState ->
+    val resources = LocalResources.current
+    val errorMessage = remember(uiState, resources) { (uiState as? UiState.Error)?.error?.toUserMessage(resources) }
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { error ->
             snackbarHostState.showSnackbar(
-                message = errorState.error.message ?: "Unexpected error",
+                message = error,
                 duration = SnackbarDuration.Short
             )
             appViewModel.action(AppAction.DismissError)
@@ -114,14 +118,14 @@ fun RedditTopApp(
                 },
                 label = "AppContent"
             ) { state ->
-                when (state) {
-                    is UiState.Loading -> Loading()
-                    is UiState.Error -> TODO()
-
-                    is UiState.Available<*> -> RedditTopNavHost(
+                if (state is UiState.Available<*>) {
+                    RedditTopNavHost(
                         navController = navController,
                         modifier = Modifier.fillMaxSize()
                     )
+                } else {
+                    // Errors are handled in the snackbar!
+                    Loading()
                 }
             }
         }

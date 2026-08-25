@@ -90,7 +90,7 @@ fun TopPostsScreen(viewModel: TopPostsScreenViewModel, modifier: Modifier = Modi
                 )
             }
 
-            is UiState.Error -> Error(errorMsg = state.error.message.orEmpty())
+            is UiState.Error -> Error(error = state.error)
             UiState.Loading -> Loading()
         }
     }

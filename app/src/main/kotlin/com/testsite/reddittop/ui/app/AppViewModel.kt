@@ -1,7 +1,6 @@
 package com.testsite.reddittop.ui.app
 
 import com.testsite.reddittop.components.managers.AppEventsManager
-import com.testsite.reddittop.core.ExceptionHandler
 import com.testsite.reddittop.data.client.repo.ClientRepository
 import com.testsite.reddittop.ui.UiEvent
 import com.testsite.reddittop.ui.UiState
@@ -21,10 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
-    exceptionHandler: ExceptionHandler,
     private val appEventsManager: AppEventsManager,
     clientRepository: ClientRepository,
-) : UiViewModel<AppState, AppAction, AppEvent>(exceptionHandler) {
+) : UiViewModel<AppState, AppAction, AppEvent>() {
 
     private val _uiState = MutableStateFlow<UiState<AppState>>(UiState.Loading)
     override val uiState: StateFlow<UiState<AppState>>

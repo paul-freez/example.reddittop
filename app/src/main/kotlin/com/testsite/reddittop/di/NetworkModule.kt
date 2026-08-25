@@ -1,16 +1,20 @@
 package com.testsite.reddittop.di
 
+import android.content.Context
+import android.net.ConnectivityManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.testsite.reddittop.BuildConfig
+import com.testsite.reddittop.components.connectivity.ConnectivityInterceptor
+import com.testsite.reddittop.components.connectivity.ErrorHandlingCallAdapterFactory
 import com.testsite.reddittop.data.client.RedditAuthApi
 import com.testsite.reddittop.data.client.model.local.OAuthTokenLocal
 import com.testsite.reddittop.data.client.source.ClientDataSource
 import com.testsite.reddittop.data.posts.RedditApi
 import com.testsite.reddittop.domain.DomainMapper.toDomain
-import com.testsite.reddittop.utils.connectivity.ConnectivityInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
@@ -35,7 +39,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideConnectivityInterceptor(): ConnectivityInterceptor = ConnectivityInterceptor()
+    fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    @Provides
+    @Singleton
+    fun provideConnectivityInterceptor(connectivityManager: ConnectivityManager): ConnectivityInterceptor =
+        ConnectivityInterceptor(connectivityManager)
 
     @Provides
     @UserAgentInterceptor
@@ -96,6 +106,7 @@ object NetworkModule {
             .baseUrl(RedditApi.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(converterFactory)
+            .addCallAdapterFactory(ErrorHandlingCallAdapterFactory())
             .build()
             .create(RedditApi::class.java)
 
@@ -109,6 +120,7 @@ object NetworkModule {
             .baseUrl(RedditAuthApi.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(converterFactory)
+            .addCallAdapterFactory(ErrorHandlingCallAdapterFactory())
             .build().create(RedditAuthApi::class.java)
 
     @Qualifier
