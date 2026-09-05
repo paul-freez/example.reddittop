@@ -57,7 +57,7 @@ fun TopPostCard(post: RedditPostUI, onPostClicked: () -> Unit) {
         ) {
             Row {
                 AsyncImage(
-                    model = post.thumbnail, // TODO: It does not work
+                    model = post.thumbnail,
                     contentDescription = "Image",
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = R.drawable.img_noimage),
