@@ -26,6 +26,8 @@ This project utilizes:
   - update look and feel of the UI
   - replace XML colors with Compose
   - provide theming (light/dark mode?)
+  - update libraries
+  - update to Nav3
 
 
 
